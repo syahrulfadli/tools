@@ -13,6 +13,7 @@ Browser ──► Cloudflare
 - **Worker hanya untuk `/api/*`** (`run_worker_first`). Saat ini hanya ada `GET /api/health`. Rute baru ditambahkan di objek `routes` pada `worker/index.ts`.
 - **Header keamanan** untuk aset statis ada di `public/_headers` (CSP, nosniff, referrer, permissions). Jika tool butuh domain eksternal (font, API), tambahkan domain itu ke CSP. `font-src` memuat `'self' data:` untuk font pdf.js.
 - **Aset vendor** (`public/vendor/`, dibuat oleh `scripts/`) dilayani sebagai file statis biasa; saat ini cmap & font standar pdf.js.
+- **SEO**: lihat [SEO](#seo). Rute `/` dan `/tools/<slug>` punya HTML sendiri hasil build; alamat lain mendapat 404 sungguhan.
 - **PWA**: `public/manifest.webmanifest` + ikon di `public/icons/` + service worker `/sw.js` (lihat [PWA](#pwa-dan-offline)).
 
 ## Privasi: tidak ada penyimpanan
@@ -80,3 +81,22 @@ Aplikasi bisa dipasang ke layar utama Android, iOS/iPadOS, dan Windows/macOS/Chr
 - **Dev.** SW hanya didaftarkan di build produksi (`import.meta.env.PROD`). Uji dengan `npm run preview`. Untuk membuang SW lama di browser: DevTools → Application → Service workers → Unregister.
 - **Header.** `public/_headers` memberi `/sw.js` dan manifest `Cache-Control: no-cache`. CSP tidak perlu diubah: `worker-src` dan `manifest-src` jatuh ke `'self'`.
 - **Menambah file public** yang harus tersedia offline sejak awal: tambahkan path-nya ke `PUBLIC_PRECACHE` di `vite.config.ts`.
+
+## SEO
+
+Aplikasi dirender di klien, jadi `build/seo.ts` (plugin Vite, dipasang di `vite.config.ts`) membuat HTML per rute saat build dengan memakai `index.html` hasil build sebagai cetakan:
+
+| Keluaran | Isi |
+| --- | --- |
+| `index.html` | Judul, deskripsi, canonical, Open Graph/Twitter, JSON-LD `WebSite` + `ItemList`, dan `<noscript>` berisi tautan ke semua tool |
+| `tools/<slug>/index.html` | Judul `<Nama> · Productivity Tools`, deskripsi dari `ToolDefinition.description`, canonical, JSON-LD `WebApplication` + `BreadcrumbList`, `<noscript>` |
+| `404.html` | Cetakan dengan `noindex`; dipakai Workers Static Assets (`not_found_handling: "404-page"`) untuk alamat yang tidak ada, jadi bukan soft 404 |
+| `robots.txt` | Izinkan semua, larang `/api/`, tautan sitemap |
+| `sitemap.xml` | Home dan semua tool |
+
+- **Sumber data**: plugin membaca `slug`, `name`, `description`, `category` dari `src/tools/<slug>/index.ts(x)` serta urutan di `registry.ts` dan `categories.ts`. Tool baru otomatis masuk sitemap; tulis field itu sebagai string satu baris (`slug: "..."`) agar terbaca, kalau tidak build gagal dengan pesan jelas.
+- **`SITE_URL`**: domain produksi (`https://domain`, tanpa path), dari env atau `.env.production`. Tanpa ini canonical, `og:url`, `og:image`, dan `sitemap.xml` dilewati dan build memberi peringatan. Contoh: `SITE_URL=https://tools.example.com npm run build`.
+- **URL kanonik tanpa garis miring** (`html_handling: "drop-trailing-slash"` di `wrangler.jsonc`); versi dengan garis miring dialihkan.
+- **Judul di klien** harus sama dengan judul statis (`<title>` di komponen tool/Home), karena Google juga merender JS.
+- Parameter `?q=` dan `?kategori=` di home tidak masuk sitemap; canonical home tetap `/`.
+- Tool baru: pastikan `name` dan `description` mewakili apa yang dicari orang (satu kalimat, kata kunci utama di awal).

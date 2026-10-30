@@ -44,7 +44,7 @@ export function Home() {
 
   return (
     <AppFrame>
-      <title>Productivity Tools</title>
+      <title>Productivity Tools: kolase foto, konverter PDF, timer, dan jam dunia</title>
       <div className="home">
         <section className="home__hero" aria-labelledby="home-title">
           <h1 id="home-title">Productivity Tools</h1>

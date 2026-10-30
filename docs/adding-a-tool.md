@@ -42,7 +42,7 @@ Daftarkan di `src/tools/registry.ts`:
 export const tools: ToolDefinition[] = [collage, nama];
 ```
 
-Tool otomatis muncul di home di bawah kategorinya, ikut filter kategori dan pencarian, dan punya rute `/tools/<slug>`.
+Tool otomatis muncul di home di bawah kategorinya, ikut filter kategori dan pencarian, punya rute `/tools/<slug>`, masuk `sitemap.xml`, dan punya HTML sendiri untuk SEO (`build/seo.ts`; tulis `slug`, `name`, `description`, `category` sebagai string satu baris).
 
 ### Kategori
 

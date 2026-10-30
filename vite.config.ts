@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
+import { seo } from "./build/seo";
 
 /** File di public/ yang ikut di-precache service worker (selain hasil build). */
 const PUBLIC_PRECACHE = [
@@ -51,5 +52,5 @@ function serviceWorker(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), cloudflare(), serviceWorker()],
+  plugins: [react(), cloudflare(), seo(), serviceWorker()],
 });

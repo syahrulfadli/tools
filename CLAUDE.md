@@ -19,6 +19,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | `public/_headers` | Header keamanan + CSP + Permissions-Policy (lokasi diizinkan untuk situs sendiri, dipakai Jam Dunia). Tambah domain/sumber/izin baru di sini bila tool membutuhkannya. |
 | `public/manifest.webmanifest`, `public/icons/` | Manifest PWA dan ikon PNG (dibuat `npm run icons` dari `scripts/make-icons.mjs`). |
 | `public/theme-init.js` | Memasang `data-theme` sebelum render pertama (tanpa kedipan). Logikanya kembar dengan `src/lib/theme.ts`. |
+| `build/seo.ts` | Plugin Vite: HTML per rute (meta, canonical, Open Graph, JSON-LD), `404.html`, `robots.txt`, `sitemap.xml`. Butuh `SITE_URL` saat build (lihat docs/architecture.md#seo). |
 | `src/service-worker.js` | Templat service worker; plugin di `vite.config.ts` mengisi daftar precache dan menulis `dist/client/sw.js`. |
 | `scripts/copy-pdfjs-assets.mjs` | Menyalin cmap & font standar pdf.js ke `public/vendor/pdfjs/` (otomatis di `predev`/`prebuild`, diabaikan git). |
 | `src/App.tsx` | Routing (`/`, `/tools/:slug`, 404) dan boundary Suspense per tool. |

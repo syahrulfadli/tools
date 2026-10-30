@@ -5,8 +5,11 @@
   "compatibility_date": "2026-10-01",
   "assets": {
     "binding": "ASSETS",
-    // SPA: semua path non-file jatuh ke index.html, kecuali /api/* yang ditangani Worker.
-    "not_found_handling": "single-page-application",
+    // Tiap rute (/ dan /tools/<slug>) punya HTML sendiri hasil build (lihat build/seo.ts), jadi alamat
+    // lain mendapat 404 sungguhan dari 404.html (SPA yang menampilkan halaman "tidak ada"). /api/* ditangani Worker.
+    "not_found_handling": "404-page",
+    // URL kanonik tanpa garis miring akhir (/tools/kolase); versi dengan garis miring dialihkan ke sana.
+    "html_handling": "drop-trailing-slash",
     "run_worker_first": ["/api/*"]
   },
   "observability": { "enabled": true }
