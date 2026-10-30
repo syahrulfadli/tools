@@ -1,3 +1,5 @@
+import type { Fit } from "./crop";
+
 /**
  * Geometri kolase. Fungsi murni: dipakai pratinjau (DOM) dan ekspor (canvas) agar
  * hasil unduhan sama persis dengan yang terlihat.
@@ -17,6 +19,8 @@ export interface CollageSettings {
   /** Sisi terpanjang hasil ekspor, piksel. */
   longEdge: number;
   format: "png" | "jpeg";
+  /** Cara foto mengisi sel bila sel tidak mengatur sendiri: dipotong penuh atau utuh. */
+  fit: Fit;
 }
 
 export interface Rect {
@@ -37,6 +41,7 @@ export const DEFAULT_SETTINGS: CollageSettings = {
   background: "#ffffff",
   longEdge: 2048,
   format: "png",
+  fit: "cover",
 };
 
 /** Ukuran kanvas hasil untuk rasio dan sisi terpanjang tertentu (dibulatkan ke piksel). */

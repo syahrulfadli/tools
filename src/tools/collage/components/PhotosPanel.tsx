@@ -5,7 +5,9 @@ import { Bone } from "../../../components/Skeleton";
 import { DEFAULT_FRAMING, MAX_ZOOM, MIN_ZOOM, zoomTo } from "../lib/crop";
 import type { Photo } from "../lib/images";
 import type { CollageAction, CollageState } from "../lib/state";
+import { Segmented } from "../../../components/tool/controls";
 import { PHOTO_DRAG_TYPE } from "./CollageCanvas";
+import { FIT_OPTIONS } from "./SettingsPanel";
 
 interface Props {
   state: CollageState;
@@ -128,6 +130,15 @@ export function PhotosPanel({ state, photoById, dispatch, pending, failures, onD
                 {selectedPhoto.width.toLocaleString("id-ID")} × {selectedPhoto.height.toLocaleString("id-ID")} px
               </span>
             </p>
+            <Segmented
+              label="Tampilan foto"
+              options={FIT_OPTIONS}
+              value={selectedCell.framing.fit ?? settings.fit}
+              onChange={(fit) =>
+                // Ganti mode = mulai dari posisi tengah tanpa zoom, agar hasilnya langsung terlihat utuh/penuh.
+                dispatch({ type: "frame", cell: selected!, framing: { ...DEFAULT_FRAMING, fit } })
+              }
+            />
             <label className="slider">
               <span className="slider__row">
                 <span>Zoom</span>
@@ -144,7 +155,9 @@ export function PhotosPanel({ state, photoById, dispatch, pending, failures, onD
               />
             </label>
             <div className="cell-controls__actions">
-              <button type="button" className="btn" onClick={() => dispatch({ type: "frame", cell: selected!, framing: DEFAULT_FRAMING })}>
+              <button type="button" className="btn" onClick={() =>
+                  dispatch({ type: "frame", cell: selected!, framing: { ...DEFAULT_FRAMING, fit: selectedCell.framing.fit } })
+                }>
                 <Crosshair size={14} strokeWidth={1.5} aria-hidden="true" />
                 Tengahkan
               </button>

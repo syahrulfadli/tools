@@ -171,6 +171,11 @@
   touch-action: none;
 }
 
+.cell__frame {
+  position: absolute;
+  overflow: hidden;
+}
+
 .cell img {
   position: absolute;
   top: 0;

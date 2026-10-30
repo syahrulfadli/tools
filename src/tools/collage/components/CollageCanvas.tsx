@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type DragEvent, type KeyboardEvent, type PointerEvent } from "react";
 import { ImagePlus } from "lucide-react";
-import { coverCrop, panBy, zoomTo } from "../lib/crop";
+import { panBy, placeImage, visibleArea, zoomTo, type Framing } from "../lib/crop";
 import type { Photo } from "../lib/images";
 import { cellRects, cornerRadius, outputSize, unitSize, type Rect } from "../lib/layout";
 import type { CollageAction, CollageState } from "../lib/state";
@@ -17,7 +17,8 @@ interface Props {
 }
 
 const WELL_PAD = 32;
-const KEY_PAN = 0.1;
+/** Langkah geser keyboard: 5% dari ukuran sel. */
+const KEY_PAN = 0.05;
 const KEY_ZOOM = 0.1;
 
 /**
@@ -100,15 +101,16 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
     const dy = event.clientY - active.y;
     active.x = event.clientX;
     active.y = event.clientY;
-    const framing = panBy(cells[index].framing, dx, dy, photo.width, photo.height, rect.width, rect.height);
-    dispatch({ type: "frame", cell: index, framing });
+    const { framing } = cells[index];
+    const next = panBy(framing, dx, dy, photo.width, photo.height, rect.width, rect.height, framing.fit ?? settings.fit);
+    dispatch({ type: "frame", cell: index, framing: next });
   }
 
   function onPointerUp() {
     drag.current = null;
   }
 
-  function onKeyDown(event: KeyboardEvent<HTMLDivElement>, index: number) {
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>, index: number, rect: Rect) {
     const cell = cells[index];
     const photo = photoIn(index);
     if (event.key === "Enter" || event.key === " ") {
@@ -119,12 +121,14 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
     }
     if (!photo) return;
     const { framing } = cell;
-    const moves: Record<string, () => typeof framing> = {
-      // Panah menggeser foto searah tombol, sama seperti menyeret.
-      ArrowLeft: () => ({ ...framing, x: Math.min(1, framing.x + KEY_PAN) }),
-      ArrowRight: () => ({ ...framing, x: Math.max(-1, framing.x - KEY_PAN) }),
-      ArrowUp: () => ({ ...framing, y: Math.min(1, framing.y + KEY_PAN) }),
-      ArrowDown: () => ({ ...framing, y: Math.max(-1, framing.y - KEY_PAN) }),
+    // Panah menggeser foto searah tombol, sama seperti menyeret.
+    const pan = (dx: number, dy: number) =>
+      panBy(framing, dx * rect.width * KEY_PAN, dy * rect.height * KEY_PAN, photo.width, photo.height, rect.width, rect.height, framing.fit ?? settings.fit);
+    const moves: Record<string, () => Framing> = {
+      ArrowLeft: () => pan(-1, 0),
+      ArrowRight: () => pan(1, 0),
+      ArrowUp: () => pan(0, -1),
+      ArrowDown: () => pan(0, 1),
       "+": () => zoomTo(framing, framing.zoom + KEY_ZOOM),
       "=": () => zoomTo(framing, framing.zoom + KEY_ZOOM),
       "-": () => zoomTo(framing, framing.zoom - KEY_ZOOM),
@@ -181,7 +185,11 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
             const cell = cells[index];
             const row = Math.floor(index / settings.cols) + 1;
             const col = (index % settings.cols) + 1;
-            const crop = photo ? coverCrop(photo.width, photo.height, rect.width, rect.height, cell.framing) : null;
+            const place = photo
+              ? placeImage(photo.width, photo.height, rect.width, rect.height, cell.framing, cell.framing.fit ?? settings.fit)
+              : null;
+            // Bingkai = bagian sel yang tertutup foto; sudut membulat mengikuti bingkai ini.
+            const frame = place ? visibleArea(rect.width, rect.height, place) : null;
             const classes = [
               "cell",
               photo ? "cell--filled" : "cell--empty",
@@ -218,7 +226,7 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
                 onPointerMove={(event) => onPointerMove(event, index, rect)}
                 onPointerUp={onPointerUp}
                 onPointerCancel={onPointerUp}
-                onKeyDown={(event) => onKeyDown(event, index)}
+                onKeyDown={(event) => onKeyDown(event, index, rect)}
                 onDragOver={(event) => {
                   if (!acceptsDrop(event)) return;
                   event.preventDefault();
@@ -228,17 +236,28 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
                 onDragLeave={() => setDropTarget((current) => (current === index ? null : current))}
                 onDrop={(event) => onDrop(event, index)}
               >
-                {photo && crop ? (
-                  <img
-                    src={photo.url}
-                    alt=""
-                    draggable={false}
+                {photo && place && frame ? (
+                  <span
+                    className="cell__frame"
                     style={{
-                      width: photo.width * crop.scale,
-                      height: photo.height * crop.scale,
-                      transform: `translate(${-crop.sx * crop.scale}px, ${-crop.sy * crop.scale}px)`,
+                      left: frame.x,
+                      top: frame.y,
+                      width: frame.width,
+                      height: frame.height,
+                      borderRadius: cornerRadius(settings.radius, frame, unit),
                     }}
-                  />
+                  >
+                    <img
+                      src={photo.url}
+                      alt=""
+                      draggable={false}
+                      style={{
+                        width: place.width,
+                        height: place.height,
+                        transform: `translate(${place.x - frame.x}px, ${place.y - frame.y}px)`,
+                      }}
+                    />
+                  </span>
                 ) : (
                   <span className="cell__add">
                     <ImagePlus size={rect.width < 64 || rect.height < 64 ? 16 : 20} strokeWidth={1.5} aria-hidden="true" />

@@ -1,5 +1,6 @@
 import { useState, type Dispatch } from "react";
 import { Minus, Plus } from "lucide-react";
+import type { Fit } from "../lib/crop";
 import { outputSize, type CollageSettings } from "../lib/layout";
 import {
   BACKGROUNDS,
@@ -14,6 +15,11 @@ import {
 import type { CollageAction } from "../lib/state";
 import { GridGlyph, RatioGlyph } from "./Glyphs";
 import { ColorSwatches, PanelSection, Segmented, Slider } from "../../../components/tool/controls";
+
+export const FIT_OPTIONS: { value: Fit; label: string }[] = [
+  { value: "cover", label: "Isi penuh" },
+  { value: "contain", label: "Utuh" },
+];
 
 interface Props {
   settings: CollageSettings;
@@ -81,6 +87,16 @@ export function SettingsPanel({ settings, dispatch }: Props) {
           <span aria-hidden="true">:</span>
           <NumberField label="Tinggi" value={settings.ratioH} min={1} max={MAX_RATIO_PART} onChange={(ratioH) => set({ ratioH })} />
         </fieldset>
+      </PanelSection>
+
+      <PanelSection title="Foto di sel">
+        <Segmented label="Cara foto mengisi sel" options={FIT_OPTIONS} value={settings.fit} onChange={(fit) => set({ fit })} />
+        <p className="field-note">
+          {settings.fit === "cover"
+            ? "Foto menutupi seluruh sel; tepi yang tidak muat dipotong."
+            : "Seluruh foto terlihat tanpa dipotong; sisa ruang sel diisi warna latar."}{" "}
+          Berlaku untuk semua sel; tiap sel bisa diubah di Sel terpilih.
+        </p>
       </PanelSection>
 
       <PanelSection title="Jarak dan sudut">

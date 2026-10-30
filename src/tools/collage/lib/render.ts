@@ -1,5 +1,5 @@
 import { fileStamp } from "../../../lib/files";
-import { coverCrop, type Framing } from "./crop";
+import { placeImage, visibleArea, type Framing } from "./crop";
 import { cellRects, cornerRadius, outputSize, snapRect, unitSize, type CollageSettings } from "./layout";
 
 export interface RenderCell {
@@ -36,12 +36,16 @@ export async function renderCollage(
     if (!cell) return;
     const rect = snapRect(rawRect);
     const { naturalWidth: imgW, naturalHeight: imgH } = cell.image;
-    const crop = coverCrop(imgW, imgH, rect.width, rect.height, cell.framing);
+    const place = placeImage(imgW, imgH, rect.width, rect.height, cell.framing, cell.framing.fit ?? settings.fit);
+    // Sudut membulat mengikuti bagian yang tertutup foto, jadi foto "utuh" yang lebih kecil
+    // dari selnya tetap bersudut bulat.
+    const area = visibleArea(rect.width, rect.height, place);
+    const clip = { x: rect.x + area.x, y: rect.y + area.y, width: area.width, height: area.height };
 
     ctx.save();
-    roundedRectPath(ctx, rect.x, rect.y, rect.width, rect.height, cornerRadius(settings.radius, rect, unit));
+    roundedRectPath(ctx, clip.x, clip.y, clip.width, clip.height, cornerRadius(settings.radius, clip, unit));
     ctx.clip();
-    ctx.drawImage(cell.image, crop.sx, crop.sy, crop.sw, crop.sh, rect.x, rect.y, rect.width, rect.height);
+    ctx.drawImage(cell.image, rect.x + place.x, rect.y + place.y, place.width, place.height);
     ctx.restore();
   });
 

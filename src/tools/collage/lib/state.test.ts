@@ -35,4 +35,13 @@ describe("collageReducer", () => {
     expect(ids(state)).toEqual([null, "b", null, null]);
     expect(state.photos.map((p) => p.id)).toEqual(["b"]);
   });
+
+  it("mengganti mode isi/utuh global menghapus pilihan per sel", () => {
+    let state = collageReducer(initialState(), { type: "addPhotos", photos: ["a", "b"].map(photo) });
+    state = collageReducer(state, { type: "frame", cell: 0, framing: { zoom: 1, x: 0, y: 0, fit: "contain" } });
+    expect(state.cells[0].framing.fit).toBe("contain");
+    state = collageReducer(state, { type: "settings", patch: { fit: "cover" } });
+    expect(state.settings.fit).toBe("cover");
+    expect(state.cells.every((cell) => cell.framing.fit === undefined)).toBe(true);
+  });
 });

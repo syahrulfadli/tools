@@ -87,12 +87,17 @@ export function collageReducer(state: CollageState, action: CollageAction): Coll
 
     case "settings": {
       const settings = { ...state.settings, ...action.patch };
+      // Mode isi/utuh global berlaku ke semua sel: pilihan per sel sebelumnya dihapus.
+      const base =
+        action.patch.fit !== undefined
+          ? state.cells.map((cell) => ({ ...cell, framing: { ...cell.framing, fit: undefined } }))
+          : state.cells;
       const count = settings.rows * settings.cols;
-      if (count === state.cells.length) return { ...state, settings };
+      if (count === base.length) return { ...state, settings, cells: base };
 
       // Grid berubah: sel lama dipertahankan sesuai urutan baca, foto yang terlepas
       // mengisi sel kosong berikutnya, dan sisanya tetap menunggu di daftar foto.
-      const cells = Array.from({ length: count }, (_, i) => state.cells[i] ?? emptyCell());
+      const cells = Array.from({ length: count }, (_, i) => base[i] ?? emptyCell());
       const placed = new Set(cells.map((cell) => cell.photoId));
       fillEmpty(
         cells,
