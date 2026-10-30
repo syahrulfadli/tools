@@ -30,8 +30,8 @@ export type CollageAction =
 
 const emptyCell = (): Cell => ({ photoId: null, framing: DEFAULT_FRAMING });
 
-export function initialState(): CollageState {
-  const settings = DEFAULT_SETTINGS;
+/** `settings`: setelan awal, mis. setelan terakhir dari localStorage. */
+export function initialState(settings: CollageSettings = DEFAULT_SETTINGS): CollageState {
   return {
     settings,
     photos: [],

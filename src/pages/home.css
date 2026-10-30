@@ -51,7 +51,7 @@
 }
 
 .search input:hover {
-  border-color: #b4b6b9;
+  border-color: var(--control-hover);
 }
 
 .search input:focus-visible {

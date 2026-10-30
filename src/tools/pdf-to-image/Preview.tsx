@@ -8,7 +8,7 @@ export function PdfToImagePreview() {
         <rect key={y} x="54" y={y} width={i % 3 === 2 ? 26 : 40} height="3" rx="1.5" fill="#bfc3bd" />
       ))}
       <rect x="54" y="110" width="22" height="12" rx="2" fill="#131416" />
-      <path d="M118 78h22m-6-6 6 6-6 6" fill="none" stroke="#5d5f60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M118 78h22m-6-6 6 6-6 6" fill="none" stroke="var(--muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <rect x="166" y="34" width="50" height="66" fill="#c9ccc6" />
       <rect x="160" y="42" width="50" height="66" fill="#aeb3ad" />
       <rect x="154" y="50" width="50" height="66" fill="#1b6c80" />

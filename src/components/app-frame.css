@@ -27,6 +27,88 @@
   color: var(--muted);
 }
 
+.frame__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* ---------- Tema: segmented kecil berisi tiga ikon ---------- */
+
+.theme-switch {
+  display: flex;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.theme-switch button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--muted);
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.theme-switch button:hover {
+  color: var(--text);
+}
+
+.theme-switch button.is-active {
+  border-color: var(--border);
+  background: var(--active);
+  color: var(--text);
+}
+
+/* ---------- Pasang aplikasi ---------- */
+
+.install {
+  position: relative;
+}
+
+.install__button {
+  margin-right: -8px;
+}
+
+.install__button svg {
+  flex: none;
+}
+
+.install__help {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  display: grid;
+  gap: 8px;
+  width: min(300px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.14); /* taste-skill-ignore: popover mengambang */
+}
+
+.install__glyph {
+  display: inline;
+  vertical-align: -2px;
+}
+
+.install__note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+
 .frame__sheet {
   flex: 1;
   margin: 0 var(--sheet-inset) var(--sheet-inset);
@@ -44,9 +126,38 @@
     display: none;
   }
 
+  .frame__actions {
+    gap: 8px;
+  }
+
+  .install__button span {
+    display: none;
+  }
+
+  .install__button {
+    width: var(--control-height);
+    margin-right: 0;
+    padding: 0;
+  }
+
+  /* Di ponsel petunjuk menempel ke lebar layar, tepat di bawah bar. */
+  .install__help {
+    position: fixed;
+    top: calc(var(--topbar) - 4px);
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+
   .frame__sheet {
     margin: 0;
     border-radius: 0;
     border-width: 1px 0 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .frame__note {
+    display: none;
   }
 }

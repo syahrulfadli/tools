@@ -8,7 +8,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 2. **Setiap tool punya folder `docs/` sendiri** (`src/tools/<slug>/docs/README.md`). Perbarui docs itu setiap kali perilaku tool berubah.
 3. **Setiap tool punya skeleton** yang meniru layout akhirnya. Skeleton tampil selama chunk tool dimuat.
 4. **Setiap tool masuk satu kategori** dari `src/tools/categories.ts` (mis. converter → `file-converter`). Buat kategori baru di sana bila belum ada yang cocok.
-5. **UI mengikuti design system** di [docs/design-system.md](docs/design-system.md). Pakai token di `src/styles/tokens.css`. Jangan pakai gradien, glow, glass, emoji, label kecil huruf kapital, atau ikon di kotak berwarna.
+5. **UI mengikuti design system** di [docs/design-system.md](docs/design-system.md). Pakai token di `src/styles/tokens.css`, jangan warna heksadesimal di CSS komponen (agar tema gelap ikut berlaku). Jangan pakai gradien, glow, glass, emoji, label kecil huruf kapital, atau ikon di kotak berwarna.
 
 ## Peta proyek
 
@@ -17,15 +17,18 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | `worker/index.ts` | Worker: hanya menangani `/api/*`. Aset statis dilayani Workers Static Assets. |
 | `wrangler.jsonc` | Konfigurasi Cloudflare (SPA fallback, `run_worker_first: ["/api/*"]`). |
 | `public/_headers` | Header keamanan + CSP untuk aset statis. Tambah domain/sumber baru di sini bila tool membutuhkannya. |
+| `public/manifest.webmanifest`, `public/icons/` | Manifest PWA dan ikon PNG (dibuat `npm run icons` dari `scripts/make-icons.mjs`). |
+| `public/theme-init.js` | Memasang `data-theme` sebelum render pertama (tanpa kedipan). Logikanya kembar dengan `src/lib/theme.ts`. |
+| `src/service-worker.js` | Templat service worker; plugin di `vite.config.ts` mengisi daftar precache dan menulis `dist/client/sw.js`. |
 | `scripts/copy-pdfjs-assets.mjs` | Menyalin cmap & font standar pdf.js ke `public/vendor/pdfjs/` (otomatis di `predev`/`prebuild`, diabaikan git). |
 | `src/App.tsx` | Routing (`/`, `/tools/:slug`, 404) dan boundary Suspense per tool. |
 | `src/tools/registry.ts` | Daftar tool, pencarian, pengelompokan per kategori, lazy loading, preload. |
 | `src/tools/categories.ts` | Daftar kategori (id, nama, deskripsi), urutan = urutan di home. |
 | `src/tools/types.ts` | Kontrak `ToolDefinition`. |
 | `src/tools/<slug>/` | Satu tool: `index.ts(x)`, komponen, `lib/`, skeleton, preview, `docs/`. |
-| `src/components/` | Shell (`AppFrame`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
+| `src/components/` | Shell (`AppFrame` dengan `ThemeSwitch` + `InstallButton`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
 | `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`/`Toggle`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. |
-| `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob). |
+| `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob), `theme.ts` (tema terang/gelap/sistem), `pwa.ts` (daftar SW, dialog pasang), `storage.ts` (localStorage aman untuk preferensi). |
 | `src/styles/tool.css` | Kerangka & kontrol halaman tool (bar, panel, area kerja, responsif). |
 | `src/pages/` | Home (hero + pencarian + filter kategori + daftar per kategori) dan 404. |
 | `docs/` | Dokumentasi lintas tool. |
@@ -43,15 +46,18 @@ npm run deploy     # build + wrangler deploy
 
 Setelah build ulang, restart `vite preview`: server lama memegang manifest aset lama dan menyajikan HTML untuk file JS/CSS.
 
+Service worker (PWA) hanya aktif di build produksi, jadi uji offline/pemasangan lewat `npm run preview`, bukan `npm run dev`.
+
 ## Dokumentasi
 
-- [docs/architecture.md](docs/architecture.md): alur request, routing, skeleton, privasi.
+- [docs/architecture.md](docs/architecture.md): alur request, routing, skeleton, privasi, tema, PWA & offline.
 - [docs/adding-a-tool.md](docs/adding-a-tool.md): langkah menambah tool baru.
 - [docs/design-system.md](docs/design-system.md): token, layout, aturan UI.
 - Tool:
   - Edit Gambar → Kolase Foto: [src/tools/collage/docs/README.md](src/tools/collage/docs/README.md)
   - File Converter → PDF ke Gambar: [src/tools/pdf-to-image/docs/README.md](src/tools/pdf-to-image/docs/README.md)
   - File Converter → Gambar ke PDF: [src/tools/image-to-pdf/docs/README.md](src/tools/image-to-pdf/docs/README.md)
+  - File Converter → Word ke PDF: [src/tools/word-to-pdf/docs/README.md](src/tools/word-to-pdf/docs/README.md)
   - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
   - Waktu → Timer & Stopwatch: [src/tools/timer/docs/README.md](src/tools/timer/docs/README.md)
 

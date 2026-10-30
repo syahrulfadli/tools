@@ -6,8 +6,6 @@
 
 :root {
   --checker: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect width='16' height='16' fill='%23fff'/%3E%3Crect width='8' height='8' fill='%23e3e4e0'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23e3e4e0'/%3E%3C/svg%3E");
-  --well: #e8e9e5;
-  --dash: #c6c9c3;
 }
 
 .tool {
@@ -167,7 +165,7 @@
 
 .stepper__control .btn:disabled {
   background: transparent;
-  color: #a9aca7;
+  color: var(--disabled-ink);
 }
 
 .stepper__control output {
@@ -243,7 +241,7 @@
 .swatch input[type="color"] {
   width: 20px;
   height: 20px;
-  border: 1px solid rgb(0 0 0 / 0.14);
+  border: 1px solid var(--swatch-edge);
   border-radius: 4px;
 }
 
@@ -381,7 +379,7 @@
   place-items: center;
   border: 2px dashed var(--accent);
   border-radius: var(--radius-sheet);
-  background: rgb(243 244 242 / 0.55);
+  background: var(--overlay);
   pointer-events: none;
 }
 
@@ -434,7 +432,7 @@
   width: 32px;
   height: 18px;
   border-radius: 999px;
-  background: #b9bcb6;
+  background: var(--toggle-off);
   transition: background var(--dur) var(--ease);
 }
 
@@ -446,15 +444,18 @@
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: #fff;
-  transition: transform var(--dur) var(--ease);
+  background: var(--toggle-knob);
+  transition:
+    transform var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 
 .toggle input:checked + .toggle__track {
-  background: var(--primary);
+  background: var(--toggle-on);
 }
 
 .toggle input:checked + .toggle__track::after {
+  background: var(--toggle-knob-on);
   transform: translateX(14px);
 }
 
@@ -562,6 +563,39 @@
   width: 100%;
 }
 
+/* Kartu satu dokumen yang terbuka di panel (PDF ke Gambar, Word ke PDF). */
+.doc-card {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 4px 12px;
+}
+
+.doc-card > svg {
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.doc-card p {
+  display: grid;
+  min-width: 0;
+}
+
+.doc-card__name {
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.doc-card p .num {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.doc-card .button-row {
+  grid-column: 2;
+}
+
 .button-row {
   display: flex;
   flex-wrap: wrap;
@@ -653,18 +687,18 @@
     padding: 10px 14px;
     border-radius: var(--radius-card);
     background: var(--primary);
-    color: #fff;
+    color: var(--on-primary);
     box-shadow: 0 6px 20px rgb(0 0 0 / 0.18); /* taste-skill-ignore: toast mengambang */
     text-align: left;
     white-space: normal;
   }
 
   .tool-bar__status .tool-bar__strong {
-    color: #fff;
+    color: var(--on-primary);
   }
 
   .tool-bar__status .tool-bar__error {
-    color: #ffb4b4;
+    color: var(--on-primary-negative);
   }
 
   .tool-bar__actions {

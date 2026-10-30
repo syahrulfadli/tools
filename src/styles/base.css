@@ -107,7 +107,7 @@ a {
 .btn--primary {
   background: var(--primary);
   border-color: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .btn--primary:hover {
@@ -115,9 +115,9 @@ a {
 }
 
 .btn--primary:disabled {
-  background: #5a5d61;
-  border-color: #5a5d61;
-  color: #e6e7e8;
+  background: var(--primary-disabled);
+  border-color: var(--primary-disabled);
+  color: var(--on-primary-disabled);
 }
 
 .btn--ghost {
@@ -131,7 +131,7 @@ a {
 
 .btn--ghost:disabled {
   background: transparent;
-  color: #b0b3ae;
+  color: var(--disabled-ink);
 }
 
 .btn--icon {
@@ -190,16 +190,23 @@ a {
 .chip.is-active {
   border-color: var(--primary);
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .chip.is-active .num {
-  color: #c9cbcd;
+  color: var(--on-primary-muted);
 }
 
 .chip:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* Dipasang sesaat oleh src/lib/theme.ts saat tema berganti. */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

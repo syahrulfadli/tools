@@ -22,7 +22,7 @@ Mengubah halaman PDF menjadi gambar **JPEG atau PNG**, satu file per halaman. Bi
 | `index.tsx` | `ToolDefinition`; skeleton memakai `ConverterSkeleton` bersama. |
 | `PdfToImageTool.tsx` | Komponen utama: siklus dokumen, thumbnail, pilihan halaman, konversi, unduhan. |
 | `Preview.tsx` | SVG mini untuk home. |
-| `pdf-to-image.css` | Kartu dokumen, form sandi, kisi halaman. |
+| `pdf-to-image.css` | Form sandi, kisi halaman. Kartu dokumen memakai `.doc-card` bersama di `styles/tool.css`. |
 | `lib/pdf.ts` | Pembungkus pdf.js: `openPdf`, `pageSize`, `pageToImage`, `pageThumbnail`, `PdfPasswordError`. |
 | `lib/pages.ts` | `parsePageRanges`, `formatPageRanges`, `pageFilename` (+ test). |
 

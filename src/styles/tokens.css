@@ -4,8 +4,13 @@
  *
  * Wajah produk: frame diwarnai abu batu (ruang cetak / contact sheet), sheet tetap putih.
  * Satu aksen (teal) hanya untuk data, seleksi, dan tanda merek — bukan untuk chrome.
+ *
+ * Tema: `:root` = terang. `[data-theme="dark"]` di <html> menimpa warna (dipasang oleh
+ * public/theme-init.js sebelum render dan src/lib/theme.ts saat user mengganti tema).
  */
 :root {
+  color-scheme: light;
+
   --ground: #f3f4f2;      /* frame: top bar + latar jendela */
   --surface: #ffffff;     /* sheet & panel */
   --raised: #f4f5f3;      /* well kanvas, satu langkah dari surface */
@@ -13,14 +18,22 @@
   --border: #e6e7e4;
   --rule: #efefed;
   --control: #cdced1;
+  --control-hover: #b4b6b9;
   --text: #131416;
   --muted: #5d5f60;
   --faint: #6b6b6b;
 
   --primary: #1d1f20;
   --primary-hover: #33363a;
+  --primary-disabled: #5a5d61;
+  --on-primary: #ffffff;          /* teks di atas --primary (tombol utama, chip aktif, toast) */
+  --on-primary-muted: #c9cbcd;
+  --on-primary-disabled: #e6e7e8;
+  --on-primary-negative: #ffb4b4;
+  --disabled-ink: #aaada8;
   --accent: #1b6c80;
   --accent-soft: #e3eff2;
+  --on-accent: #ffffff;
   --negative: #c4242a;
   --positive: #1e7b4f;
   --pill-neutral-bg: #ebedee; --pill-neutral-ink: #353736;
@@ -28,6 +41,16 @@
   --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
 
   --skeleton: #e9eae7;
+  --well: #e8e9e5;                /* kanvas tool editor, satu tingkat lebih gelap dari frame */
+  --well-hover: #e0e1dd;
+  --dash: #c6c9c3;                /* garis putus-putus slot kosong / area drop */
+  --glyph-idle: #b9bcb6;
+  --swatch-edge: rgb(0 0 0 / 0.14);
+  --overlay: rgb(243 244 242 / 0.55);
+  --toggle-off: #b9bcb6;
+  --toggle-on: var(--primary);
+  --toggle-knob: #ffffff;
+  --toggle-knob-on: #ffffff;
 
   --radius-sheet: 16px;
   --radius-panel: 16px;
@@ -50,4 +73,54 @@
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --dur: 160ms;
+}
+
+/*
+ * Tema gelap: frame paling gelap, sheet satu langkah lebih terang, well kanvas lebih gelap
+ * dari sheet. Tombol utama dibalik jadi hampir putih dengan teks gelap. Aksen dicerahkan
+ * (teal tanda merek di favicon) agar kontrasnya tetap di atas 4.5:1.
+ * Kertas dokumen (halaman PDF, latar hasil ekspor) tetap putih karena itu isi file.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ground: #111213;
+  --surface: #1a1b1d;
+  --raised: #212325;
+  --active: #2a2c2f;
+  --border: #2b2d30;
+  --rule: #242628;
+  --control: #45484c;
+  --control-hover: #5a5e62;
+  --text: #e9eae8;
+  --muted: #a4a7a5;
+  --faint: #8d908e;
+
+  --primary: #e9eae8;
+  --primary-hover: #d2d4d1;
+  --primary-disabled: #46494d;
+  --on-primary: #131416;
+  --on-primary-muted: #55585b;
+  --on-primary-disabled: #a4a7a5;
+  --on-primary-negative: #b3261e;
+  --disabled-ink: #5c5f62;
+  --accent: #5fb3c7;
+  --accent-soft: #17343b;
+  --on-accent: #0d1a1e;
+  --negative: #f28b82;
+  --positive: #6dd3a0;
+  --pill-neutral-bg: #2a2c2f; --pill-neutral-ink: #d0d2d0;
+  --pill-positive-bg: #12301f; --pill-positive-ink: #a6efc4;
+  --pill-negative-bg: #3a1715; --pill-negative-ink: #ffb4ab;
+
+  --skeleton: #2a2c2f;
+  --well: #0c0d0e;
+  --well-hover: #161719;
+  --dash: #4a4d50;
+  --glyph-idle: #55585b;
+  --swatch-edge: rgb(255 255 255 / 0.2);
+  --overlay: rgb(17 18 19 / 0.6);
+  --toggle-off: #45484c;
+  --toggle-knob: #a4a7a5;
+  --toggle-knob-on: #131416;
 }

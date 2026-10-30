@@ -1,36 +1,4 @@
-/* PDF ke Gambar: kartu dokumen di panel dan kisi halaman di area kerja. */
-
-.doc-card {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  gap: 4px 12px;
-}
-
-.doc-card > svg {
-  margin-top: 2px;
-  color: var(--accent);
-}
-
-.doc-card p {
-  display: grid;
-  min-width: 0;
-}
-
-.doc-card__name {
-  overflow: hidden;
-  font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.doc-card p .num {
-  color: var(--muted);
-  font-size: var(--fs-small);
-}
-
-.doc-card .button-row {
-  grid-column: 2;
-}
+/* PDF ke Gambar: form sandi dan kisi halaman di area kerja. */
 
 .field-note--error {
   color: var(--negative);
@@ -117,7 +85,7 @@
   border: 1.5px solid var(--control);
   border-radius: 999px;
   background: var(--surface);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .page.is-selected .page__check {

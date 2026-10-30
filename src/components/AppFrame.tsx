@@ -2,11 +2,14 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { ShieldCheck } from "lucide-react";
 import { BrandMark } from "./BrandMark";
+import { InstallButton } from "./InstallButton";
+import { ThemeSwitch } from "./ThemeSwitch";
 import "./app-frame.css";
 
 /**
  * Shell "framed-sheet": top bar 48px di atas frame berwarna, konten di sheet putih
  * yang menjorok 8px dari tepi jendela. Dipakai halaman non-tool (home, 404).
+ * Kanan bar: catatan privasi, tombol pasang (PWA), dan pilihan tema.
  */
 export function AppFrame({ children }: { children: ReactNode }) {
   return (
@@ -16,10 +19,14 @@ export function AppFrame({ children }: { children: ReactNode }) {
           <BrandMark />
           <span>Productivity Tools</span>
         </Link>
-        <p className="frame__note">
-          <ShieldCheck size={16} strokeWidth={1.5} aria-hidden="true" />
-          <span>File diproses di perangkatmu, tidak pernah disimpan</span>
-        </p>
+        <div className="frame__actions">
+          <p className="frame__note">
+            <ShieldCheck size={16} strokeWidth={1.5} aria-hidden="true" />
+            <span>File diproses di perangkatmu, tidak pernah disimpan</span>
+          </p>
+          <InstallButton />
+          <ThemeSwitch />
+        </div>
       </header>
       <main className="frame__sheet">{children}</main>
     </div>

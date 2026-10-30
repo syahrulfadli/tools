@@ -8,6 +8,19 @@ UI diarahkan dengan [taste-skill](https://github.com/Leonxlnx/taste-skill/tree/m
 - **Satu aksen** (`--accent`, teal `#1b6c80`) hanya untuk data, seleksi, dan tanda merek (satu petak di logo). Tombol utama berwarna hampir hitam (`--primary`).
 - **Tanda merek:** empat petak, satu berwarna aksen, yang sekaligus menggambarkan kotak perkakas dan grid kolase (`BrandMark`).
 
+## Tema gelap
+
+Tema gelap memakai struktur yang sama, hanya token yang ditimpa di `:root[data-theme="dark"]` (`src/styles/tokens.css`):
+
+- **Frame paling gelap** (`--ground` #111213), sheet satu langkah lebih terang (`--surface` #1a1b1d), well kanvas lebih gelap dari sheet (`--well`).
+- **Tombol utama dibalik**: `--primary` hampir putih, teksnya `--on-primary` gelap. Chip aktif dan toast ponsel ikut.
+- **Aksen dicerahkan** ke teal tanda merek di favicon (`#5fb3c7`) agar kontras tetap di atas 4.5:1; teks di atas aksen memakai `--on-accent`.
+- **Kertas tetap putih**: halaman PDF, latar kolase pilihan user, dan papan catur transparansi adalah isi file, bukan chrome.
+- Pratinjau SVG di home: bagian yang mewakili UI (panah, muka timer) memakai `var(--muted)`, `var(--surface)`, `var(--text)`, `var(--accent)`; bentuk foto/kertas tetap warna tetap.
+- Jangan menulis warna heksadesimal di CSS komponen. Bila butuh warna baru, tambahkan token di kedua blok tokens.css.
+
+Pilihan tema ada di bar atas home: segmented kecil tiga ikon (Terang, Gelap, Ikuti sistem), item aktif memakai `--active`.
+
 ## Layout
 
 | Layar | Pola |

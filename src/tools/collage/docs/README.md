@@ -17,6 +17,7 @@ Menggabungkan beberapa foto jadi satu gambar dalam grid R×K (1–8 baris, 1–8
 7. **Atur foto di sel:** klik untuk memilih, seret untuk menggeser (di mode Utuh: memindah letak foto di dalam sel), zoom lewat slider, Ctrl/⌘+scroll, atau pinch di trackpad. Keyboard: panah menggeser, `+`/`-` zoom, Delete mengosongkan sel, Enter memilih/menambah.
 8. **Tukar posisi:** seret thumbnail dari panel Foto ke sel lain. Jika foto sudah ada di sel lain, keduanya bertukar.
 9. **Ekspor:** sisi terpanjang 1080 / 2048 / 4096 px, format PNG/JPG, lalu "Unduh".
+10. **Setelan tersimpan:** setelan terakhir diingat di browser ini (lihat *Penyimpanan setelan*). **Kembalikan ke bawaan** mengembalikan semua setelan dan menghapus yang tersimpan.
 
 Di layar sentuh, ketukan pertama pada sel hanya memilih sel supaya halaman tetap bisa digulir; geser foto setelah sel terpilih.
 
@@ -36,6 +37,7 @@ Di layar sentuh, ketukan pertama pada sel hanya memilih sel supaya halaman tetap
 | `lib/presets.ts` | Preset grid, rasio, ukuran, latar, batas slider. |
 | `lib/layout.ts` | `CollageSettings`, `outputSize`, `cellRects`, `snapRect`, `cornerRadius`. |
 | `lib/crop.ts` | `Fit`, `Framing`, `placeImage`, `visibleArea`, `panBy`, `zoomTo`. |
+| `lib/persist.ts` | `loadSettings`, `saveSettings`, `sanitizeSettings`, `isDefaultSettings` (+ test). |
 | `lib/state.ts` | Reducer: foto, sel, pilihan, setelan. |
 | `lib/images.ts` | Muat file ke object URL + `HTMLImageElement`, lepas memori. |
 | `lib/render.ts` | Render ke canvas, `toBlob`, nama file (unduhan lewat `lib/files.ts`). |
@@ -63,12 +65,21 @@ State   { settings, photos: Photo[], cells: Cell[] /* rows*cols, urut baris */, 
 - **Grid berubah:** sel lama dipertahankan sesuai urutan baca; foto yang belum dipakai mengisi sel kosong berikutnya; sisanya tetap di tray dengan catatan "N foto belum dipakai".
 - **Memori:** `releasePhoto` dipanggil saat hapus, saat mulai ulang, dan saat unmount. Kanvas ekspor dikecilkan ke 0×0 setelah `toBlob`.
 
+## Penyimpanan setelan
+
+- Semua `CollageSettings` (grid, rasio, jarak/tepi/sudut, latar, isi/utuh, ukuran dan format ekspor) disimpan di `localStorage["kolase:setelan:v1"]` lewat `src/lib/storage.ts`. Foto, urutan foto, dan pembingkaian per sel **tidak** disimpan.
+- Disimpan 300 ms setelah perubahan terakhir, dan langsung saat tool ditutup atau halaman ditinggalkan (`pagehide`).
+- Setelan yang sama dengan bawaan tidak disimpan: kuncinya dihapus.
+- Saat dimuat, `sanitizeSettings` memeriksa setiap kolom (bilangan bulat dalam batas, warna `#rrggbb` atau `transparent`, opsi yang dikenal). Kolom yang tidak sah kembali ke bawaan dan kolom lain tetap dipakai; JSON rusak atau penyimpanan yang diblokir (mode privat) berarti setelan bawaan.
+- Bila arti sebuah kolom berubah, naikkan versi kunci (`v2`) di `STORAGE_KEY` agar setelan lama diabaikan.
+- Dua tab Kolase yang terbuka bersamaan: tab yang terakhir menyimpan yang menang.
+
 ## Batasan
 
 - HEIC/HEIF hanya bisa dibaca di browser yang mendukungnya (Safari). Di browser lain muncul pesan "ubah ke JPG dulu".
 - 4096 px adalah batas sisi terpanjang; kanvas lebih besar bisa gagal di Safari iOS.
 - Orientasi EXIF mengikuti perilaku browser (modern: otomatis diterapkan).
-- State tidak disimpan: menutup atau me-reload tab menghapus pekerjaan. Ini disengaja (tidak menyimpan data user).
+- Foto dan susunannya tidak disimpan: menutup atau me-reload tab menghapus pekerjaan. Ini disengaja (tidak menyimpan data user). Hanya setelan yang diingat.
 
 ## Ide pengembangan
 

@@ -31,7 +31,7 @@
 }
 
 .pdf-page:hover .pdf-page__frame {
-  background: #e0e1dd;
+  background: var(--well-hover);
 }
 
 .pdf-page__sheet {

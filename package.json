@@ -12,9 +12,11 @@
     "deploy": "npm run build && wrangler deploy",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "icons": "node scripts/make-icons.mjs"
   },
   "dependencies": {
+    "docx-preview": "^0.4.1",
     "lucide-react": "^1.64.0",
     "pdfjs-dist": "^4.10.38",
     "react": "^19.3.1",

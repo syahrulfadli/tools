@@ -1,7 +1,8 @@
 import { useState, type Dispatch } from "react";
 import { Minus, Plus } from "lucide-react";
 import type { Fit } from "../lib/crop";
-import { outputSize, type CollageSettings } from "../lib/layout";
+import { DEFAULT_SETTINGS, outputSize, type CollageSettings } from "../lib/layout";
+import { isDefaultSettings } from "../lib/persist";
 import {
   BACKGROUNDS,
   GRID_PRESETS,
@@ -117,6 +118,22 @@ export function SettingsPanel({ settings, dispatch }: Props) {
             JPG tidak mendukung transparansi; latar akan diisi putih. Pilih PNG untuk latar transparan.
           </p>
         )}
+      </PanelSection>
+
+      <PanelSection title="Setelan tersimpan">
+        <p className="field-note">
+          Setelan terakhir diingat di browser ini dan dipakai lagi saat kamu membuka Kolase. Foto tidak ikut disimpan.
+        </p>
+        <div className="button-row">
+          <button
+            type="button"
+            className="btn"
+            disabled={isDefaultSettings(settings)}
+            onClick={() => set(DEFAULT_SETTINGS)}
+          >
+            Kembalikan ke bawaan
+          </button>
+        </div>
       </PanelSection>
     </aside>
   );

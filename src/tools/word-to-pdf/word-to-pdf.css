@@ -1,0 +1,55 @@
+/* Word ke PDF: langkah simpan di panel dan iframe pratinjau di area kerja. */
+
+.word-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: var(--fs-small);
+  line-height: 18px;
+}
+
+.word-steps strong {
+  font-weight: 600;
+}
+
+.word-steps + .field-note {
+  margin-top: 10px;
+}
+
+/* Iframe mengisi sisa area kerja; halaman bergulir di dalamnya. */
+.word-preview {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-bottom-right-radius: inherit;
+  border-bottom-left-radius: inherit;
+  background: var(--well);
+}
+
+.word-preview iframe {
+  flex: 1;
+  width: 100%;
+  border: 0;
+}
+
+/* Tetap ter-layout (ukuran halaman bisa diukur) tetapi tidak terlihat. */
+.word-preview.is-hidden {
+  flex: 0 0 0;
+  visibility: hidden;
+}
+
+.word-preview__loading {
+  display: grid;
+  flex: 1;
+  place-items: start center;
+  padding: 20px;
+  background: var(--well);
+}
+
+@media (max-width: 1180px) {
+  .word-preview:not(.is-hidden) {
+    min-height: 70vh;
+  }
+}

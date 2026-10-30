@@ -9,6 +9,7 @@ import { PhotosPanel } from "./components/PhotosPanel";
 import { ExportSection, SettingsPanel } from "./components/SettingsPanel";
 import { isImageFile, loadPhoto, releasePhoto, type Photo } from "./lib/images";
 import { collageFilename, renderCollage } from "./lib/render";
+import { loadSettings, saveSettings } from "./lib/persist";
 import { collageReducer, initialState } from "./lib/state";
 import "./collage.css";
 
@@ -19,7 +20,8 @@ type ExportStatus =
   | { kind: "error"; message: string };
 
 export default function CollageTool() {
-  const [state, dispatch] = useReducer(collageReducer, undefined, initialState);
+  // Mulai dengan setelan terakhir yang tersimpan di browser ini.
+  const [state, dispatch] = useReducer(collageReducer, undefined, () => initialState(loadSettings()));
   const [pending, setPending] = useState<{ done: number; total: number } | null>(null);
   const [failures, setFailures] = useState<FileFailure[]>([]);
   const [status, setStatus] = useState<ExportStatus>({ kind: "idle" });
@@ -27,6 +29,23 @@ export default function CollageTool() {
 
   const photoById = useMemo(() => new Map(state.photos.map((photo) => [photo.id, photo])), [state.photos]);
   const filled = state.cells.filter((cell) => cell.photoId).length;
+
+  // Simpan setelan setelah berhenti diubah sebentar (slider tidak menulis tiap piksel),
+  // dan langsung saat tool ditutup atau halaman ditinggalkan agar perubahan terakhir tidak hilang.
+  const settingsRef = useRef(state.settings);
+  settingsRef.current = state.settings;
+  useEffect(() => {
+    const timer = setTimeout(() => saveSettings(state.settings), 300);
+    return () => clearTimeout(timer);
+  }, [state.settings]);
+  useEffect(() => {
+    const flush = () => saveSettings(settingsRef.current);
+    window.addEventListener("pagehide", flush);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      flush();
+    };
+  }, []);
 
   // Lepas semua object URL saat tool ditutup: tidak ada sisa foto di memori.
   const photosRef = useRef(state.photos);

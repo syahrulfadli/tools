@@ -55,7 +55,7 @@
 }
 
 .preset svg {
-  color: #b9bcb6;
+  color: var(--glyph-idle);
   transition: color var(--dur) var(--ease);
 }
 

@@ -9,8 +9,18 @@ Kumpulan tools receh untuk produktivitas harian. Berjalan di Cloudflare Workers;
 | Kolase Foto | Edit Gambar | `/tools/kolase` | [src/tools/collage/docs](src/tools/collage/docs/README.md) |
 | PDF ke Gambar (JPEG/PNG) | File Converter | `/tools/pdf-ke-gambar` | [src/tools/pdf-to-image/docs](src/tools/pdf-to-image/docs/README.md) |
 | Gambar ke PDF (JPEG, PNG, …) | File Converter | `/tools/gambar-ke-pdf` | [src/tools/image-to-pdf/docs](src/tools/image-to-pdf/docs/README.md) |
+| Word ke PDF (.docx) | File Converter | `/tools/word-ke-pdf` | [src/tools/word-to-pdf/docs](src/tools/word-to-pdf/docs/README.md) |
 | PNG ke JPEG | File Converter | `/tools/png-ke-jpg` | [src/tools/png-to-jpg/docs](src/tools/png-to-jpg/docs/README.md) |
 | Timer & Stopwatch | Waktu | `/tools/timer` | [src/tools/timer/docs](src/tools/timer/docs/README.md) |
+
+## Pasang sebagai aplikasi
+
+Productivity Tools adalah PWA: setelah dibuka sekali, semua tool bisa dipakai tanpa internet.
+
+- **Android (Chrome/Edge)** dan **Windows/macOS (Chrome/Edge)**: tombol **Pasang aplikasi** di bar atas home, atau ikon pasang di bilah alamat.
+- **iPhone/iPad (Safari)**: Bagikan → **Tambah ke Layar Utama**.
+
+Tema terang, gelap, atau ikuti sistem dipilih di bar atas home.
 
 ## Mulai
 

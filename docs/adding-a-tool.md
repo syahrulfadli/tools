@@ -57,16 +57,17 @@ Mulai dari bahan bersama, jangan menulis ulang:
 | Kerangka halaman | `<div className="tool" {...dropProps}>` + `ToolBar` + `<div className="tool-body tool-body--sidebar">` (panel 300 px + area kerja) |
 | Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches`, `Toggle` dari `components/tool/controls`; `.chip` (base.css) untuk preset/filter |
 | Area kerja | `<main className="panel workspace">`, `.workspace__head`, `.workspace__empty` (tombol besar keadaan kosong) |
-| Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay), `usePasteFiles`, `FileDropzone`, `FailureList` |
+| Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay), `usePasteFiles`, `FileDropzone`, `FailureList`; `.doc-card` (tool.css) untuk kartu satu dokumen yang terbuka |
 | Keluaran | `downloadBlob`, `formatBytes`, `baseName`, `uniqueNamer`, `fileStamp` (`lib/files`), `createZip` (`lib/zip`), `canvasToBlob`/`canvasLimitFactor`/`releaseCanvas` (`lib/canvas`) |
 | Skeleton converter | `ConverterSkeleton` dengan judul dan nama seksi panel |
 
-Contoh lengkap pola converter: `src/tools/png-to-jpg/`. Contoh tool tanpa file dengan state yang bertahan antar halaman (store modul + `useSyncExternalStore`): `src/tools/timer/`.
+Contoh lengkap pola converter: `src/tools/png-to-jpg/`. Contoh tool yang mencetak HTML ke PDF lewat dialog cetak (iframe pratinjau + `@page`): `src/tools/word-to-pdf/`. Contoh tool tanpa file dengan state yang bertahan antar halaman (store modul + `useSyncExternalStore`): `src/tools/timer/`.
 
 - Komponen utama wajib `export default` (syarat `React.lazy`).
 - Render `<title>Nama Tool · Productivity Tools</title>` di dalam komponen (React 19 memindahkannya ke `<head>`).
 - Tool editor memakai layout builder seperti kolase: bar 44px (tombol kembali, `h1` nama tool, pill status, aksi utama di kanan), lalu panel. Tool sederhana boleh memakai `AppFrame`.
 - Hanya satu tombol utama (`btn btn--primary`) per layar.
+- **Warna hanya lewat token** (`var(--...)`), termasuk di `Preview.tsx` untuk bagian yang mewakili UI. Warna heksadesimal di CSS tool tidak ikut berganti di tema gelap. Cek tool di kedua tema (pilihan tema di bar atas home).
 - **Jangan menyimpan atau mengunggah file user.** Proses di browser. Lepas object URL saat tidak dipakai.
 - Tampilkan progres untuk setiap proses yang lama (lihat [architecture.md](architecture.md#proses-yang-terlihat-di-dalam-tool)).
 
