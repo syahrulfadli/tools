@@ -1,0 +1,56 @@
+# Productivity Tools
+
+Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudflare Worker TypeScript (backend), satu proyek, satu deploy.
+
+## Aturan yang tidak boleh dilanggar
+
+1. **Tidak pernah menyimpan data user.** File yang diunggah user diproses di browser (canvas, object URL) dan tidak dikirim ke server. Jangan menambah binding KV/R2/D1/Durable Objects untuk data user. Respons `/api/*` selalu `Cache-Control: no-store`.
+2. **Setiap tool punya folder `docs/` sendiri** (`src/tools/<slug>/docs/README.md`). Perbarui docs itu setiap kali perilaku tool berubah.
+3. **Setiap tool punya skeleton** yang meniru layout akhirnya. Skeleton tampil selama chunk tool dimuat.
+4. **Setiap tool masuk satu kategori** dari `src/tools/categories.ts` (mis. converter → `file-converter`). Buat kategori baru di sana bila belum ada yang cocok.
+5. **UI mengikuti design system** di [docs/design-system.md](docs/design-system.md). Pakai token di `src/styles/tokens.css`. Jangan pakai gradien, glow, glass, emoji, label kecil huruf kapital, atau ikon di kotak berwarna.
+
+## Peta proyek
+
+| Path | Isi |
+| --- | --- |
+| `worker/index.ts` | Worker: hanya menangani `/api/*`. Aset statis dilayani Workers Static Assets. |
+| `wrangler.jsonc` | Konfigurasi Cloudflare (SPA fallback, `run_worker_first: ["/api/*"]`). |
+| `public/_headers` | Header keamanan + CSP untuk aset statis. Tambah domain/sumber baru di sini bila tool membutuhkannya. |
+| `scripts/copy-pdfjs-assets.mjs` | Menyalin cmap & font standar pdf.js ke `public/vendor/pdfjs/` (otomatis di `predev`/`prebuild`, diabaikan git). |
+| `src/App.tsx` | Routing (`/`, `/tools/:slug`, 404) dan boundary Suspense per tool. |
+| `src/tools/registry.ts` | Daftar tool, pencarian, pengelompokan per kategori, lazy loading, preload. |
+| `src/tools/categories.ts` | Daftar kategori (id, nama, deskripsi), urutan = urutan di home. |
+| `src/tools/types.ts` | Kontrak `ToolDefinition`. |
+| `src/tools/<slug>/` | Satu tool: `index.ts(x)`, komponen, `lib/`, skeleton, preview, `docs/`. |
+| `src/components/` | Shell (`AppFrame`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
+| `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. |
+| `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob). |
+| `src/styles/tool.css` | Kerangka & kontrol halaman tool (bar, panel, area kerja, responsif). |
+| `src/pages/` | Home (hero + pencarian + filter kategori + daftar per kategori) dan 404. |
+| `docs/` | Dokumentasi lintas tool. |
+
+## Perintah
+
+```bash
+npm run dev        # Vite + Worker lokal (workerd) di http://localhost:5173
+npm test           # Vitest: logika murni tiap tool
+npm run typecheck  # tsc -b untuk app, worker, dan config
+npm run build      # typecheck + build produksi ke dist/
+npm run preview    # build lalu jalankan hasil produksi secara lokal
+npm run deploy     # build + wrangler deploy
+```
+
+Setelah build ulang, restart `vite preview`: server lama memegang manifest aset lama dan menyajikan HTML untuk file JS/CSS.
+
+## Dokumentasi
+
+- [docs/architecture.md](docs/architecture.md): alur request, routing, skeleton, privasi.
+- [docs/adding-a-tool.md](docs/adding-a-tool.md): langkah menambah tool baru.
+- [docs/design-system.md](docs/design-system.md): token, layout, aturan UI.
+- Tool:
+  - Edit Gambar → Kolase Foto: [src/tools/collage/docs/README.md](src/tools/collage/docs/README.md)
+  - File Converter → PDF ke JPEG: [src/tools/pdf-to-jpg/docs/README.md](src/tools/pdf-to-jpg/docs/README.md)
+  - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
+
+Baca docs tool terkait **sebelum** mengubah tool tersebut.

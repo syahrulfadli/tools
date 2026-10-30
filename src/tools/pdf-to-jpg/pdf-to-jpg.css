@@ -1,0 +1,143 @@
+/* PDF ke JPEG: kartu dokumen di panel dan kisi halaman di area kerja. */
+
+.doc-card {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 4px 12px;
+}
+
+.doc-card > svg {
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.doc-card p {
+  display: grid;
+  min-width: 0;
+}
+
+.doc-card__name {
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.doc-card p .num {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.doc-card .button-row {
+  grid-column: 2;
+}
+
+.field-note--error {
+  color: var(--negative);
+}
+
+.number-field input[aria-invalid="true"] {
+  border-color: var(--negative);
+}
+
+.pdf-password {
+  width: min(100% - 40px, 420px);
+  align-self: center;
+  margin: auto;
+}
+
+.pdf-password .number-field {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  align-items: start;
+  gap: 20px 16px;
+  margin: 0;
+  list-style: none;
+}
+
+.page {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.page__sheet {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  transition:
+    border-color var(--dur) var(--ease),
+    opacity var(--dur) var(--ease);
+}
+
+.page__sheet img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.page__sheet .bone {
+  border-radius: 0;
+}
+
+.page:hover .page__sheet {
+  border-color: var(--control);
+}
+
+.page.is-selected .page__sheet {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.page:not(.is-selected) .page__sheet img {
+  opacity: 0.55;
+}
+
+.page__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--control);
+  border-radius: 999px;
+  background: var(--surface);
+  color: #fff;
+}
+
+.page.is-selected .page__check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.page__label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.page.is-selected .page__label {
+  color: var(--text);
+  font-weight: 500;
+}
+
+@media (max-width: 720px) {
+  .page-grid {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 16px 12px;
+  }
+}

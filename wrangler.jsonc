@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "productivity-tools",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "binding": "ASSETS",
+    // SPA: semua path non-file jatuh ke index.html, kecuali /api/* yang ditangani Worker.
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true }
+  // Sengaja TIDAK ada binding KV / R2 / D1: aplikasi ini tidak menyimpan data user.
+}

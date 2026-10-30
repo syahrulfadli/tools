@@ -1,0 +1,378 @@
+/*
+ * Kolase: tiga kolom di desktop.
+ * 288 + kanvas + 300 + 2×12 celah + 2×8 tepi = lebar jendela.
+ * Kerangka umum (bar, panel, kontrol) ada di src/styles/tool.css.
+ */
+
+.collage__body {
+  grid-template-columns: 288px minmax(0, 1fr) 300px;
+}
+
+/* ---------- Grid & rasio ---------- */
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.preset,
+.ratio {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--text);
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+
+.preset:hover,
+.ratio:hover {
+  background: var(--raised);
+  border-color: var(--control);
+}
+
+.preset:active,
+.ratio:active {
+  transform: scale(0.98);
+}
+
+.preset.is-active,
+.ratio.is-active {
+  border-color: var(--text);
+  border-width: 1.5px;
+}
+
+.preset {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  height: 64px;
+  padding: 8px 0 6px;
+  font-size: 13px;
+}
+
+.preset svg {
+  color: #b9bcb6;
+  transition: color var(--dur) var(--ease);
+}
+
+.preset.is-active svg {
+  color: var(--accent);
+}
+
+
+.ratio-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ratio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 10px;
+  text-align: left;
+}
+
+.ratio svg {
+  flex: none;
+  color: var(--muted);
+}
+
+.ratio.is-active svg {
+  color: var(--accent);
+}
+
+.ratio__text {
+  display: grid;
+  min-width: 0;
+  line-height: 16px;
+}
+
+.ratio__text .num {
+  font-weight: 500;
+}
+
+.ratio__use {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--fs-small);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ratio-custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.ratio-custom legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+
+.ratio-custom.is-active .number-field input {
+  border-color: var(--text);
+}
+
+
+/* ---------- Kanvas ---------- */
+
+.canvas-well {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--well);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+}
+
+.sheet-preview {
+  position: relative;
+}
+
+.sheet-preview--transparent {
+  background: var(--checker) 0 0 / 16px 16px;
+}
+
+.cell {
+  position: absolute;
+  overflow: hidden;
+  outline-offset: 2px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell--filled {
+  cursor: grab;
+}
+
+.cell--filled:active {
+  cursor: grabbing;
+}
+
+.cell--filled.is-selected {
+  z-index: 1;
+  outline: 2px solid var(--accent);
+  touch-action: none;
+}
+
+.cell img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.cell--empty {
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--dash);
+  background: var(--raised);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.cell--empty:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cell__add {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  font-weight: 500;
+}
+
+.cell.is-drop-target {
+  z-index: 2;
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+.canvas-well__stamp {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 2px 8px;
+  border-radius: var(--radius-chip);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.skeleton-sheet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: min(56%, 420px);
+  aspect-ratio: 4 / 5;
+  padding: 0;
+}
+
+
+.tray {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 1;
+}
+
+.thumb--pending .bone {
+  height: 100% !important;
+}
+
+.thumb__button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 6px;
+  background: var(--raised);
+  cursor: grab;
+}
+
+.thumb__button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur) var(--ease);
+}
+
+.thumb__button:hover img {
+  transform: scale(1.04);
+}
+
+.thumb.is-selected .thumb__button {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.thumb__badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-chip);
+  background: var(--surface);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 20px;
+  text-align: center;
+}
+
+.thumb__remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(19 20 22 / 0.78);
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.thumb:hover .thumb__remove,
+.thumb:focus-within .thumb__remove {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .thumb__remove {
+    opacity: 1;
+  }
+}
+
+.cell-controls {
+  display: grid;
+  gap: 14px;
+}
+
+.cell-controls__name {
+  display: grid;
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cell-controls__name .num {
+  color: var(--muted);
+  font-size: var(--fs-small);
+  font-weight: 400;
+}
+
+.cell-controls__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+
+.skeleton-sheet .bone {
+  background: var(--surface);
+}
+
+@media (max-width: 1180px) {
+  .collage__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .canvas-well {
+    order: -2;
+    height: min(72vh, 720px);
+  }
+
+  .photos {
+    order: -1;
+  }
+
+  .tray {
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .canvas-well {
+    height: min(118vw, 70vh);
+    min-height: 320px;
+  }
+}

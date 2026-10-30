@@ -1,0 +1,23 @@
+.not-found,
+.route-error {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 96px var(--pad);
+}
+
+.not-found h1,
+.route-error h1 {
+  font-size: var(--fs-title);
+  line-height: 28px;
+  font-weight: 600;
+}
+
+.not-found p,
+.route-error p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 24px;
+}

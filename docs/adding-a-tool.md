@@ -1,0 +1,92 @@
+# Menambah tool baru
+
+Contoh lengkap: `src/tools/collage/`. Ganti `<slug>` dengan nama URL tool (huruf kecil, tanda hubung).
+
+## 1. Buat folder
+
+```
+src/tools/<slug>/
+├── index.ts(x)         # ToolDefinition (wajib; .tsx bila skeleton ditulis inline)
+├── <Nama>Tool.tsx      # komponen utama, export default (wajib, di-lazy-load)
+├── <Nama>Skeleton.tsx  # skeleton layout tool (wajib)
+├── Preview.tsx         # gambar mini SVG untuk baris di home (wajib)
+├── <slug>.css          # gaya khusus tool, hanya memakai token
+├── components/         # komponen UI tool
+├── lib/                # logika murni + *.test.ts
+└── docs/README.md      # dokumentasi tool (wajib)
+```
+
+## 2. Definisikan tool
+
+```ts
+// src/tools/<slug>/index.ts
+import type { ToolDefinition } from "../types";
+import { NamaSkeleton } from "./NamaSkeleton";
+import { NamaPreview } from "./Preview";
+
+export const nama: ToolDefinition = {
+  slug: "<slug>",
+  name: "Nama Tool",
+  description: "Satu kalimat tentang apa yang dihasilkan.",
+  category: "file-converter", // id dari src/tools/categories.ts
+  keywords: ["sinonim", "english term"],
+  load: () => import("./NamaTool"),
+  Skeleton: NamaSkeleton,
+  Preview: NamaPreview,
+};
+```
+
+Daftarkan di `src/tools/registry.ts`:
+
+```ts
+export const tools: ToolDefinition[] = [collage, nama];
+```
+
+Tool otomatis muncul di home di bawah kategorinya, ikut filter kategori dan pencarian, dan punya rute `/tools/<slug>`.
+
+### Kategori
+
+Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
+
+## 3. Aturan komponen tool
+
+Mulai dari bahan bersama, jangan menulis ulang:
+
+| Butuh | Pakai |
+| --- | --- |
+| Kerangka halaman | `<div className="tool" {...dropProps}>` + `ToolBar` + `<div className="tool-body tool-body--sidebar">` (panel 300 px + area kerja) |
+| Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches` dari `components/tool/controls` |
+| Area kerja | `<main className="panel workspace">`, `.workspace__head`, `.workspace__empty` (tombol besar keadaan kosong) |
+| Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay), `usePasteFiles`, `FileDropzone`, `FailureList` |
+| Keluaran | `downloadBlob`, `formatBytes`, `baseName`, `uniqueNamer`, `fileStamp` (`lib/files`), `createZip` (`lib/zip`), `canvasToBlob`/`canvasLimitFactor`/`releaseCanvas` (`lib/canvas`) |
+| Skeleton converter | `ConverterSkeleton` dengan judul dan nama seksi panel |
+
+Contoh lengkap pola converter: `src/tools/png-to-jpg/`.
+
+- Komponen utama wajib `export default` (syarat `React.lazy`).
+- Render `<title>Nama Tool · Productivity Tools</title>` di dalam komponen (React 19 memindahkannya ke `<head>`).
+- Tool editor memakai layout builder seperti kolase: bar 44px (tombol kembali, `h1` nama tool, pill status, aksi utama di kanan), lalu panel. Tool sederhana boleh memakai `AppFrame`.
+- Hanya satu tombol utama (`btn btn--primary`) per layar.
+- **Jangan menyimpan atau mengunggah file user.** Proses di browser. Lepas object URL saat tidak dipakai.
+- Tampilkan progres untuk setiap proses yang lama (lihat [architecture.md](architecture.md#proses-yang-terlihat-di-dalam-tool)).
+
+## 4. Skeleton
+
+- Tool berpola panel + area kerja cukup memakai `ConverterSkeleton` (lihat `src/tools/png-to-jpg/index.tsx`).
+- Layout lain: pakai `SkeletonPage`, `Bone` dari `src/components/Skeleton.tsx`.
+- Tiru layout akhir dengan ukuran yang sama (pakai class CSS tool yang sama), tampilkan judul dan heading panel sebagai teks asli, ganti nilai/kontrol dengan `Bone`.
+- Skeleton masuk bundle utama: jangan impor library berat di sana.
+
+## 5. Logika dan test
+
+Taruh perhitungan (geometri, parsing, konversi) di `lib/` sebagai fungsi murni dan beri test Vitest (`*.test.ts`). Jalankan `npm test` dan `npm run typecheck`.
+
+## 6. Library pihak ketiga
+
+- Impor hanya dari komponen tool (atau `lib/` tool) agar masuk chunk tool, bukan bundle utama.
+- Bila library butuh aset statis (worker, font, wasm), layani dari domain sendiri dan periksa CSP di `public/_headers`. Contoh: pdf.js di `src/tools/pdf-to-jpg/docs/README.md`.
+- Kunci versi mayor yang API-nya sudah diuji.
+
+## 7. Dokumentasi
+
+Tulis `src/tools/<slug>/docs/README.md` dengan bagian: Fungsi, Cara pakai, Struktur file, Model data, Alur penting, Batasan, dan Ide pengembangan. Tambahkan tautannya di bagian Dokumentasi pada `CLAUDE.md`.

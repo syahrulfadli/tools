@@ -1,0 +1,53 @@
+/*
+ * Design tokens — style "framed-sheet" (taste-skill, app screens).
+ * Semua komponen hanya mengacu ke token ini. Lihat docs/design-system.md.
+ *
+ * Wajah produk: frame diwarnai abu batu (ruang cetak / contact sheet), sheet tetap putih.
+ * Satu aksen (teal) hanya untuk data, seleksi, dan tanda merek — bukan untuk chrome.
+ */
+:root {
+  --ground: #f3f4f2;      /* frame: top bar + latar jendela */
+  --surface: #ffffff;     /* sheet & panel */
+  --raised: #f4f5f3;      /* well kanvas, satu langkah dari surface */
+  --active: #e9eae7;      /* pill aktif / pressed */
+  --border: #e6e7e4;
+  --rule: #efefed;
+  --control: #cdced1;
+  --text: #131416;
+  --muted: #5d5f60;
+  --faint: #6b6b6b;
+
+  --primary: #1d1f20;
+  --primary-hover: #33363a;
+  --accent: #1b6c80;
+  --accent-soft: #e3eff2;
+  --negative: #c4242a;
+  --positive: #1e7b4f;
+  --pill-neutral-bg: #ebedee; --pill-neutral-ink: #353736;
+  --pill-positive-bg: #dcfae5; --pill-positive-ink: #04250e;
+  --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
+
+  --skeleton: #e9eae7;
+
+  --radius-sheet: 16px;
+  --radius-panel: 16px;
+  --radius-card: 8px;
+  --radius-control: 6px;
+  --radius-chip: 4px;
+
+  --sheet-inset: 8px;
+  --topbar: 48px;
+  --gap: 24px;
+  --pad: 24px;
+  --control-height: 32px;
+
+  --font: "IBM Plex Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fs-display: clamp(40px, 6.2vw, 76px);
+  --fs-title: 22px;
+  --fs-section: 16px;
+  --fs-body: 14px;
+  --fs-small: 12px;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 160ms;
+}
