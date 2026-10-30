@@ -13,6 +13,11 @@ export const categories = [
     name: "File Converter",
     description: "Ubah format file tanpa mengunggahnya ke mana pun.",
   },
+  {
+    id: "time",
+    name: "Waktu",
+    description: "Hitung mundur dan ukur durasi tanpa aplikasi tambahan.",
+  },
 ] as const;
 
 export type CategoryId = (typeof categories)[number]["id"];

@@ -46,7 +46,7 @@ Tool otomatis muncul di home di bawah kategorinya, ikut filter kategori dan penc
 
 ### Kategori
 
-Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
+Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`, hitung/ukur waktu → `time`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
 
 ## 3. Aturan komponen tool
 
@@ -55,13 +55,13 @@ Mulai dari bahan bersama, jangan menulis ulang:
 | Butuh | Pakai |
 | --- | --- |
 | Kerangka halaman | `<div className="tool" {...dropProps}>` + `ToolBar` + `<div className="tool-body tool-body--sidebar">` (panel 300 px + area kerja) |
-| Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches` dari `components/tool/controls` |
+| Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches`, `Toggle` dari `components/tool/controls`; `.chip` (base.css) untuk preset/filter |
 | Area kerja | `<main className="panel workspace">`, `.workspace__head`, `.workspace__empty` (tombol besar keadaan kosong) |
 | Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay), `usePasteFiles`, `FileDropzone`, `FailureList` |
 | Keluaran | `downloadBlob`, `formatBytes`, `baseName`, `uniqueNamer`, `fileStamp` (`lib/files`), `createZip` (`lib/zip`), `canvasToBlob`/`canvasLimitFactor`/`releaseCanvas` (`lib/canvas`) |
 | Skeleton converter | `ConverterSkeleton` dengan judul dan nama seksi panel |
 
-Contoh lengkap pola converter: `src/tools/png-to-jpg/`.
+Contoh lengkap pola converter: `src/tools/png-to-jpg/`. Contoh tool tanpa file dengan state yang bertahan antar halaman (store modul + `useSyncExternalStore`): `src/tools/timer/`.
 
 - Komponen utama wajib `export default` (syarat `React.lazy`).
 - Render `<title>Nama Tool · Productivity Tools</title>` di dalam komponen (React 19 memindahkannya ke `<head>`).

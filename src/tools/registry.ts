@@ -4,9 +4,10 @@ import { categories, findCategory, type Category } from "./categories";
 import { collage } from "./collage";
 import { pdfToJpg } from "./pdf-to-jpg";
 import { pngToJpg } from "./png-to-jpg";
+import { timer } from "./timer";
 
 /** Daftar semua tool, urut sesuai tampilan di home. Tambah tool baru di sini. */
-export const tools: ToolDefinition[] = [collage, pdfToJpg, pngToJpg];
+export const tools: ToolDefinition[] = [collage, pdfToJpg, pngToJpg, timer];
 
 const lazyCache = new Map<string, LazyExoticComponent<ComponentType>>();
 

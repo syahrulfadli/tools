@@ -115,3 +115,29 @@ export function ColorSwatches({
     </div>
   );
 }
+
+/** Sakelar on/off dengan label dan keterangan opsional. Warna "on" = tinta, bukan aksen. */
+export function Toggle({
+  label,
+  description,
+  checked,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  description?: ReactNode;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className={`toggle${disabled ? " is-disabled" : ""}`}>
+      <span className="toggle__text">
+        <span className="toggle__label">{label}</span>
+        {description && <span className="toggle__description">{description}</span>}
+      </span>
+      <input type="checkbox" role="switch" checked={checked} disabled={disabled} onChange={(event) => onChange(event.target.checked)} />
+      <span className="toggle__track" aria-hidden="true" />
+    </label>
+  );
+}

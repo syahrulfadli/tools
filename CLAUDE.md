@@ -24,7 +24,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | `src/tools/types.ts` | Kontrak `ToolDefinition`. |
 | `src/tools/<slug>/` | Satu tool: `index.ts(x)`, komponen, `lib/`, skeleton, preview, `docs/`. |
 | `src/components/` | Shell (`AppFrame`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
-| `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. |
+| `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`/`Toggle`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. |
 | `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob). |
 | `src/styles/tool.css` | Kerangka & kontrol halaman tool (bar, panel, area kerja, responsif). |
 | `src/pages/` | Home (hero + pencarian + filter kategori + daftar per kategori) dan 404. |
@@ -52,5 +52,6 @@ Setelah build ulang, restart `vite preview`: server lama memegang manifest aset 
   - Edit Gambar → Kolase Foto: [src/tools/collage/docs/README.md](src/tools/collage/docs/README.md)
   - File Converter → PDF ke JPEG: [src/tools/pdf-to-jpg/docs/README.md](src/tools/pdf-to-jpg/docs/README.md)
   - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
+  - Waktu → Timer & Stopwatch: [src/tools/timer/docs/README.md](src/tools/timer/docs/README.md)
 
 Baca docs tool terkait **sebelum** mengubah tool tersebut.

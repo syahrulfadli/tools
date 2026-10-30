@@ -148,6 +148,55 @@ a {
   white-space: nowrap;
 }
 
+/* ---------- Chip (filter / preset) ---------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--control);
+  background: var(--raised);
+}
+
+.chip .num {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.chip.is-active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.chip.is-active .num {
+  color: #c9cbcd;
+}
+
+.chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

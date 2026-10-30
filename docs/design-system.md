@@ -15,6 +15,7 @@ UI diarahkan dengan [taste-skill](https://github.com/Leonxlnx/taste-skill/tree/m
 | Home | `AppFrame` (bar 48px + sheet). Hero: `h1` besar (atas permintaan pemilik; layar app biasanya 18–32px), satu kalimat deskripsi, lalu kotak cari 56px selebar kolom 1120px. Di bawahnya daftar tool per kategori sebagai baris (preview SVG, nama, deskripsi, "Buka"). |
 | Home: kategori | Baris chip filter (Semua + tiap kategori, dengan jumlah) di atas daftar; chip aktif terisi hitam. Tiap kategori punya judul 18px + satu kalimat deskripsi. |
 | Tool converter | `ToolBar` + panel pengaturan 300px + area kerja (`.workspace`). Keadaan kosong = tombol besar bergaris putus-putus di area kerja. Di tablet/ponsel area kerja tampil di atas panel. |
+| Tool jam (timer) | `ToolBar` + panel 300px + area kerja dengan tab garis bawah (2px tinta di atas garis 1px). Angka besar di tengah, satu-satunya pengecualian batas 48px untuk layar app karena dibaca dari jauh; di dalam cincin ukurannya mengikuti lebar cincin (`cqi`). Tombol 44px berbentuk pil. |
 | Tool editor | Bar 44px di atas frame, tanpa garis. Panel 288px, kanvas, dan panel 300px dengan celah 12px dan tepi 8px. Kanvas adalah *well* satu tingkat lebih gelap dari frame. |
 | Tablet (≤1180px) | Kanvas di atas, panel bertumpuk penuh lebar, seksi di dalam panel berdampingan (`auto-fit, minmax(280px, 1fr)`). |
 | Ponsel (≤720px) | Satu kolom, sheet menempel ke tepi, status muncul sebagai toast di bawah. |
@@ -38,4 +39,4 @@ node <skill>/scripts/lint.mjs --app src
 node <skill>/scripts/inspect.mjs --app http://localhost:4173/tools/<slug>
 ```
 
-Status terakhir: lint 0 FAIL 0 WARN. Inspector: home 0 FAIL (1 WARN untuk judul hero 76px, disengaja); kolase 0 FAIL (WARN garis putus-putus slot kosong, diizinkan untuk app screen); PDF ke JPEG dan PNG ke JPEG 0 FAIL 0 WARN.
+Status terakhir: lint 0 FAIL 0 WARN. Inspector: home 0 FAIL (1 WARN untuk judul hero 76px, disengaja); kolase 0 FAIL (WARN garis putus-putus slot kosong, diizinkan untuk app screen); PDF ke JPEG dan PNG ke JPEG 0 FAIL 0 WARN; Timer & Stopwatch 0 FAIL (WARN ruang kosong di sekitar muka jam yang sengaja dipusatkan).

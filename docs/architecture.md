@@ -38,6 +38,10 @@ Selain skeleton antar halaman, setiap proses yang memakan waktu wajib terlihat:
 - Konversi banyak item: progres "3/12" di tombol utama, pesan di bar, dan tombol Batal bila lama (PDF).
 - Kegagalan: pesan di blok yang gagal, bukan banner layar penuh.
 
+## State yang bertahan antar halaman
+
+State React hilang saat tool unmount (user kembali ke home). Tool yang harus terus berjalan, seperti Timer, menyimpan state di **store modul** (variabel di modul + `useSyncExternalStore`), contohnya `src/tools/timer/lib/store.ts`. State itu tetap di memori tab saja, tidak ke server atau localStorage, dan hilang saat tab ditutup atau dimuat ulang.
+
 ## Kategori
 
 `src/tools/categories.ts` berisi kategori (`id`, `name`, `description`). `ToolDefinition.category` wajib salah satu `id` itu (dicek TypeScript). Home menampilkan filter kategori (tersimpan di `?kategori=`) dan mengelompokkan hasil per kategori dengan `groupByCategory()`. Nama kategori ikut dicari.

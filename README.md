@@ -9,6 +9,7 @@ Kumpulan tools receh untuk produktivitas harian. Berjalan di Cloudflare Workers;
 | Kolase Foto | Edit Gambar | `/tools/kolase` | [src/tools/collage/docs](src/tools/collage/docs/README.md) |
 | PDF ke JPEG | File Converter | `/tools/pdf-ke-jpg` | [src/tools/pdf-to-jpg/docs](src/tools/pdf-to-jpg/docs/README.md) |
 | PNG ke JPEG | File Converter | `/tools/png-ke-jpg` | [src/tools/png-to-jpg/docs](src/tools/png-to-jpg/docs/README.md) |
+| Timer & Stopwatch | Waktu | `/tools/timer` | [src/tools/timer/docs](src/tools/timer/docs/README.md) |
 
 ## Mulai
 
