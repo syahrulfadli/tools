@@ -1,6 +1,7 @@
 import { Suspense, useEffect } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router";
 import { RouteErrorBoundary } from "./components/RouteErrorBoundary";
+import { Credits } from "./pages/Credits";
 import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { findTool, lazyTool } from "./tools/registry";
@@ -15,6 +16,7 @@ export function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/kredit" element={<Credits />} />
       <Route path="/tools/:slug" element={<ToolRoute />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

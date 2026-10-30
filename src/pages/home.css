@@ -24,6 +24,19 @@
   line-height: 1.45;
 }
 
+.home__hero > .home__credit {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--muted);
+}
+
+.home__credit a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .search {
   position: relative;
   display: flex;

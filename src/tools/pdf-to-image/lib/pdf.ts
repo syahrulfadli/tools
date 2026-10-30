@@ -61,6 +61,14 @@ export async function pageSize(doc: PDFDocumentProxy, pageNumber: number, dpi: n
   };
 }
 
+/** Ukuran halaman dalam poin PDF (1/72 inci), memakai rotasi halaman. */
+export async function pageSizePt(doc: PDFDocumentProxy, pageNumber: number) {
+  const page = await doc.getPage(pageNumber);
+  const { width, height } = page.getViewport({ scale: 1 });
+  page.cleanup();
+  return { width, height };
+}
+
 async function renderToCanvas(doc: PDFDocumentProxy, pageNumber: number, scale: number) {
   const page = await doc.getPage(pageNumber);
   const base = page.getViewport({ scale });

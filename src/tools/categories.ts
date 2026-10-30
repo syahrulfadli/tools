@@ -14,6 +14,16 @@ export const categories = [
     description: "Ubah format file tanpa mengunggahnya ke mana pun.",
   },
   {
+    id: "pdf-tools",
+    name: "Olah PDF",
+    description: "Gabung dan pisah PDF langsung di browser, tanpa mengunggahnya.",
+  },
+  {
+    id: "compressor",
+    name: "Kompres",
+    description: "Perkecil ukuran gambar dan PDF langsung di browser, tanpa mengunggahnya.",
+  },
+  {
     id: "time",
     name: "Waktu",
     description: "Hitung mundur, ukur durasi, dan cek jam di kota lain tanpa aplikasi tambahan.",

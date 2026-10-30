@@ -1,0 +1,17 @@
+/* Gabung PDF: daftar berurutan dengan thumbnail halaman pertama dan tombol pindah. */
+
+.convert-row__thumb--doc {
+  display: grid;
+  place-items: center;
+  background: var(--raised);
+  color: var(--muted);
+}
+
+.convert-row__thumb.convert-row__thumb--doc img {
+  object-fit: contain;
+  background: var(--surface);
+}
+
+.merge-row__index {
+  color: var(--muted);
+}

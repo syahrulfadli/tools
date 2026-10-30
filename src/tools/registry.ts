@@ -2,15 +2,19 @@ import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { ToolDefinition } from "./types";
 import { categories, findCategory, type Category } from "./categories";
 import { collage } from "./collage";
+import { compressImage } from "./compress-image";
+import { compressPdf } from "./compress-pdf";
 import { imageToPdf } from "./image-to-pdf";
+import { mergePdf } from "./merge-pdf";
 import { pdfToImage } from "./pdf-to-image";
 import { pngToJpg } from "./png-to-jpg";
+import { splitPdf } from "./split-pdf";
 import { timer } from "./timer";
 import { wordToPdf } from "./word-to-pdf";
 import { worldClock } from "./world-clock";
 
 /** Daftar semua tool, urut sesuai tampilan di home. Tambah tool baru di sini. */
-export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, wordToPdf, pngToJpg, timer, worldClock];
+export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, wordToPdf, pngToJpg, mergePdf, splitPdf, compressImage, compressPdf, timer, worldClock];
 
 const lazyCache = new Map<string, LazyExoticComponent<ComponentType>>();
 

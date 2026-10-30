@@ -5,7 +5,7 @@ import { loadEnv, type Plugin } from "vite";
 const SITE_NAME = "Productivity Tools";
 const HOME_TITLE = "Productivity Tools: kolase foto, konverter PDF, timer, dan jam dunia";
 const HOME_DESCRIPTION =
-  "Kumpulan tools receh untuk produktivitas harian: kolase foto, PDF ke gambar, gambar ke PDF, Word ke PDF, PNG ke JPEG, timer, dan jam dunia. Gratis, semua file diproses di browser dan tidak pernah disimpan.";
+  "Kumpulan tools receh untuk produktivitas harian: kolase foto, kompres gambar, kompres PDF, PDF ke gambar, gambar ke PDF, Word ke PDF, PNG ke JPEG, timer, dan jam dunia. Gratis, semua file diproses di browser dan tidak pernah disimpan.";
 const OG_IMAGE = "/icons/icon-512.png";
 
 interface ToolMeta {
@@ -206,13 +206,27 @@ export function seo(): Plugin {
         emit(`tools/${tool.slug}/index.html`, renderPage(shell, page, site));
       }
 
+      emit(
+        "kredit/index.html",
+        renderPage(
+          shell,
+          {
+            title: `Kredit · ${SITE_NAME}`,
+            description: "Pustaka open source yang menjadi inti tiap tool, lengkap dengan tautan GitHub dan npm.",
+            path: "/kredit",
+            fallback: `<p><a href="/">${SITE_NAME}</a></p><h1>Kredit</h1><p>Pustaka open source yang menjadi inti tiap tool: pdf-lib, PDF.js, docx-preview, JSZip, React, dan lainnya.</p>`,
+          },
+          site,
+        ),
+      );
+
       // 404.html dipakai Workers Static Assets (not_found_handling "404-page") untuk alamat yang tidak ada.
       emit("404.html", renderPage(shell, { title: `Tidak ditemukan · ${SITE_NAME}`, description: "Halaman ini tidak ada.", noindex: true }, site));
 
       emit("robots.txt", ["User-agent: *", "Allow: /", "Disallow: /api/", ...(site ? [``, `Sitemap: ${site}/sitemap.xml`] : []), ""].join("\n"));
 
       if (site) {
-        const urls = ["/", ...tools.map((tool) => `/tools/${tool.slug}`)];
+        const urls = ["/", "/kredit", ...tools.map((tool) => `/tools/${tool.slug}`)];
         const lastmod = new Date().toISOString().slice(0, 10);
         const body = urls.map((path) => `  <url><loc>${site}${path}</loc><lastmod>${lastmod}</lastmod></url>`).join("\n");
         emit("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`);

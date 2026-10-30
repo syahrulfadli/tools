@@ -23,7 +23,7 @@ Setiap perubahan pengaturan mengonversi ulang semua gambar otomatis (setelah jed
 | `index.tsx` | `ToolDefinition`; skeleton memakai `ConverterSkeleton` bersama. |
 | `PngToJpgTool.tsx` | Komponen utama: daftar gambar, antrean konversi, ringkasan, unduhan. |
 | `Preview.tsx` | SVG mini untuk home. |
-| `png-to-jpg.css` | Baris daftar (thumbnail, nama, ukuran, aksi) dan versi ponsel. |
+| (tanpa css sendiri) | Baris daftar memakai `.convert-list` / `.convert-row` bersama di `styles/tool.css`. |
 | `lib/convert.ts` | `decode` (ImageBitmap + deteksi transparansi), `toJpeg`, `targetSize`, `sizeChange` (+ test). |
 
 ## Model data

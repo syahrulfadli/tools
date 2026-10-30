@@ -46,7 +46,7 @@ Tool otomatis muncul di home di bawah kategorinya, ikut filter kategori dan penc
 
 ### Kategori
 
-Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`, hitung/ukur waktu → `time`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
+Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`, gabung/pisah/susun PDF → `pdf-tools`, perkecil ukuran file → `compressor`, hitung/ukur waktu → `time`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
 
 ## 3. Aturan komponen tool
 

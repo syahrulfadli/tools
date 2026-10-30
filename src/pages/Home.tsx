@@ -49,6 +49,9 @@ export function Home() {
         <section className="home__hero" aria-labelledby="home-title">
           <h1 id="home-title">Productivity Tools</h1>
           <p>Kumpulan tools receh untuk produktivitas harian.</p>
+          <p className="home__credit">
+            Dibangun dengan pustaka open source. <Link to="/kredit">Lihat kredit</Link>
+          </p>
           <form
             className="search"
             role="search"

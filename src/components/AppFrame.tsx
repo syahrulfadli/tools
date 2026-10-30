@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import { ShieldCheck } from "lucide-react";
+import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { BrandMark } from "./BrandMark";
 import { InstallButton } from "./InstallButton";
+import { NoahMark } from "./NoahMark";
 import { ThemeSwitch } from "./ThemeSwitch";
 import "./app-frame.css";
 
@@ -10,6 +11,7 @@ import "./app-frame.css";
  * Shell "framed-sheet": top bar 48px di atas frame berwarna, konten di sheet putih
  * yang menjorok 8px dari tepi jendela. Dipakai halaman non-tool (home, 404).
  * Kanan bar: catatan privasi, tombol pasang (PWA), dan pilihan tema.
+ * Footer di bawah sheet: tautan kredit dan pembuat (Noah Resource Tech).
  */
 export function AppFrame({ children }: { children: ReactNode }) {
   return (
@@ -29,6 +31,15 @@ export function AppFrame({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main className="frame__sheet">{children}</main>
+      <footer className="frame__footer">
+        <Link to="/kredit">Kredit</Link>
+        <a href="https://noahresourcetech.com" className="frame__maker" target="_blank" rel="noopener">
+          <span>Dibuat oleh</span>
+          <NoahMark size={18} />
+          <strong>Noah Resource Tech</strong>
+          <ArrowUpRight size={14} strokeWidth={1.5} aria-hidden="true" />
+        </a>
+      </footer>
     </div>
   );
 }

@@ -117,7 +117,44 @@
   border-radius: var(--radius-sheet);
 }
 
+.frame__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 4px calc(var(--sheet-inset) + var(--pad)) calc(var(--sheet-inset) + 8px);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.frame__footer a {
+  transition: color var(--dur) var(--ease);
+}
+
+.frame__footer a:hover {
+  color: var(--text);
+}
+
+.frame__maker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.frame__maker strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
 @media (max-width: 640px) {
+  .frame__footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
   .frame__bar {
     padding: 0 16px;
   }

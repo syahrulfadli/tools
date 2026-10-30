@@ -8,7 +8,6 @@ import { useFilePicker, usePageFileDrop, usePasteFiles } from "../../components/
 import { baseName, downloadBlob, fileStamp, formatBytes, uniqueNamer } from "../../lib/files";
 import { createZip } from "../../lib/zip";
 import { ACCEPTED_TYPES, decode, isConvertible, sizeChange, targetSize, toJpeg, type ConvertOptions } from "./lib/convert";
-import "./png-to-jpg.css";
 
 interface Item {
   id: string;

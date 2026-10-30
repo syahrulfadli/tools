@@ -27,7 +27,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | `src/tools/categories.ts` | Daftar kategori (id, nama, deskripsi), urutan = urutan di home. |
 | `src/tools/types.ts` | Kontrak `ToolDefinition`. |
 | `src/tools/<slug>/` | Satu tool: `index.ts(x)`, komponen, `lib/`, skeleton, preview, `docs/`. |
-| `src/components/` | Shell (`AppFrame` dengan `ThemeSwitch` + `InstallButton`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
+| `src/components/` | Shell (`AppFrame` dengan `ThemeSwitch` + `InstallButton`, footer kredit + `NoahMark`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
 | `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`/`Toggle`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. |
 | `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob), `theme.ts` (tema terang/gelap/sistem), `pwa.ts` (daftar SW, dialog pasang), `storage.ts` (localStorage aman untuk preferensi). |
 | `src/styles/tool.css` | Kerangka & kontrol halaman tool (bar, panel, area kerja, responsif). |
@@ -60,6 +60,10 @@ Service worker (PWA) hanya aktif di build produksi, jadi uji offline/pemasangan 
   - File Converter → Gambar ke PDF: [src/tools/image-to-pdf/docs/README.md](src/tools/image-to-pdf/docs/README.md)
   - File Converter → Word ke PDF: [src/tools/word-to-pdf/docs/README.md](src/tools/word-to-pdf/docs/README.md)
   - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
+  - Olah PDF → Gabung PDF: [src/tools/merge-pdf/docs/README.md](src/tools/merge-pdf/docs/README.md)
+  - Olah PDF → Pisah PDF: [src/tools/split-pdf/docs/README.md](src/tools/split-pdf/docs/README.md)
+  - Kompres → Kompres Gambar: [src/tools/compress-image/docs/README.md](src/tools/compress-image/docs/README.md)
+  - Kompres → Kompres PDF: [src/tools/compress-pdf/docs/README.md](src/tools/compress-pdf/docs/README.md)
   - Waktu → Timer & Stopwatch: [src/tools/timer/docs/README.md](src/tools/timer/docs/README.md)
   - Waktu → Jam Dunia: [src/tools/world-clock/docs/README.md](src/tools/world-clock/docs/README.md)
 

@@ -1,0 +1,137 @@
+.credits {
+  display: grid;
+  gap: 40px;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 48px var(--pad) 96px;
+}
+
+.credits__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  color: var(--muted);
+}
+
+.credits__back:hover {
+  color: var(--text);
+}
+
+.credits__head h1 {
+  font-size: var(--fs-title);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.credits__head p {
+  margin-top: 12px;
+  max-width: 56ch;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.credits h2 {
+  padding-bottom: 12px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.credits ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.credits__libs--card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.credits__lib {
+  display: grid;
+  gap: 6px;
+  padding: 16px 20px;
+}
+
+.credits__lib + .credits__lib {
+  border-top: 1px solid var(--border);
+}
+
+.credits__lib-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+
+.credits__lib-head strong {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.credits__lib-head strong a:hover {
+  text-decoration: underline;
+}
+
+.credits__license {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.credits__links {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.credits__links a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.credits__lib > p {
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.credits .credits__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.credits__tools a {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-chip);
+  font-size: 14px;
+  line-height: 22px;
+  transition: background var(--dur) var(--ease);
+}
+
+.credits__tools a:hover {
+  background: var(--raised);
+}
+
+@media (max-width: 640px) {
+  .credits {
+    padding: 32px 16px 64px;
+  }
+}
+
+.credits__tools {
+  color: var(--muted);
+}
+
+.credits__tools a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

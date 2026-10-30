@@ -20,6 +20,7 @@ export function Slider({
   max,
   step = 1,
   display,
+  disabled,
   onChange,
 }: {
   label: string;
@@ -29,6 +30,7 @@ export function Slider({
   step?: number;
   /** Teks nilai di kanan label; bawaan angka mentah. */
   display?: string;
+  disabled?: boolean;
   onChange: (value: number) => void;
 }) {
   return (
@@ -37,7 +39,7 @@ export function Slider({
         <span>{label}</span>
         <span className="num">{display ?? value}</span>
       </span>
-      <input type="range" min={min} max={max} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} />
+      <input type="range" min={min} max={max} step={step} value={value} disabled={disabled} onChange={(event) => onChange(Number(event.target.value))} />
     </label>
   );
 }

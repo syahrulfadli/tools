@@ -11,6 +11,10 @@ Kumpulan tools receh untuk produktivitas harian. Berjalan di Cloudflare Workers;
 | Gambar ke PDF (JPEG, PNG, …) | File Converter | `/tools/gambar-ke-pdf` | [src/tools/image-to-pdf/docs](src/tools/image-to-pdf/docs/README.md) |
 | Word ke PDF (.docx) | File Converter | `/tools/word-ke-pdf` | [src/tools/word-to-pdf/docs](src/tools/word-to-pdf/docs/README.md) |
 | PNG ke JPEG | File Converter | `/tools/png-ke-jpg` | [src/tools/png-to-jpg/docs](src/tools/png-to-jpg/docs/README.md) |
+| Gabung PDF | Olah PDF | `/tools/gabung-pdf` | [src/tools/merge-pdf/docs](src/tools/merge-pdf/docs/README.md) |
+| Pisah PDF | Olah PDF | `/tools/pisah-pdf` | [src/tools/split-pdf/docs](src/tools/split-pdf/docs/README.md) |
+| Kompres Gambar | Kompres | `/tools/kompres-gambar` | [src/tools/compress-image/docs](src/tools/compress-image/docs/README.md) |
+| Kompres PDF | Kompres | `/tools/kompres-pdf` | [src/tools/compress-pdf/docs](src/tools/compress-pdf/docs/README.md) |
 | Timer & Stopwatch | Waktu | `/tools/timer` | [src/tools/timer/docs](src/tools/timer/docs/README.md) |
 | Jam Dunia | Waktu | `/tools/jam-dunia` | [src/tools/world-clock/docs](src/tools/world-clock/docs/README.md) |
 

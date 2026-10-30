@@ -1,0 +1,14 @@
+/* Pisah PDF: di mode Rentang dan Per n kisi halaman hanya pratinjau, jadi tanpa gaya pilihan. */
+
+.page--static.is-selected .page__sheet {
+  outline: 0;
+  border-color: var(--border);
+}
+
+.page--static:not(.is-selected) .page__sheet img {
+  opacity: 0.4;
+}
+
+.page--static .page__sheet img {
+  opacity: 1;
+}
