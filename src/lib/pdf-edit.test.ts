@@ -1,6 +1,6 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, degrees } from "pdf-lib";
 import { describe, expect, it } from "vitest";
-import { extractParts, loadPdf, mergePdfs } from "./pdf-edit";
+import { extractParts, loadPdf, mergePdfs, pageBoxes, rearrangePdf } from "./pdf-edit";
 
 /** PDF uji: halaman ke-i berukuran lebar 100 + i, supaya urutan bisa diperiksa. */
 async function makeFile(name: string, pages: number, widthBase = 100) {
@@ -44,5 +44,27 @@ describe("extractParts", () => {
 describe("loadPdf", () => {
   it("menolak file yang bukan PDF dengan pesan jelas", async () => {
     await expect(loadPdf(new TextEncoder().encode("halo"))).rejects.toThrow("bukan PDF yang valid");
+  });
+});
+
+describe("rearrangePdf", () => {
+  it("menyusun ulang, membuang, dan memutar halaman", async () => {
+    const file = await makeFile("x.pdf", 4);
+    const out = await rearrangePdf(file, [
+      { page: 3, rotate: 0 },
+      { page: 1, rotate: 90 },
+      { page: 4, rotate: 270 },
+    ]);
+    const doc = await PDFDocument.load(new Uint8Array(await out.arrayBuffer()));
+    expect(doc.getPages().map((page) => page.getWidth())).toEqual([102, 100, 103]);
+    expect(pageBoxes(doc).map((box) => box.rotation)).toEqual([0, 90, 270]);
+  });
+
+  it("menambah rotasi ke rotasi halaman asal", async () => {
+    const src = await PDFDocument.create();
+    src.addPage([100, 200]).setRotation(degrees(270));
+    const file = new File([(await src.save()) as Uint8Array<ArrayBuffer>], "r.pdf");
+    const doc = await PDFDocument.load(new Uint8Array(await (await rearrangePdf(file, [{ page: 1, rotate: 180 }])).arrayBuffer()));
+    expect(pageBoxes(doc)[0].rotation).toBe(90);
   });
 });

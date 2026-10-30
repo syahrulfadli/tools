@@ -5,7 +5,7 @@ import { WorldClockSkeleton } from "./WorldClockSkeleton";
 export const worldClock: ToolDefinition = {
   slug: "jam-dunia",
   name: "Jam Dunia",
-  description: "Bandingkan jam di dua kota atau lebih secara berdampingan, lengkap dengan selisih waktu dan pratinjau jam rapat.",
+  description: "Bandingkan jam di beberapa kota sekaligus, lengkap dengan selisih waktunya. Praktis untuk mencari jadwal rapat yang pas.",
   category: "time",
   keywords: ["jam dunia", "world clock", "zona waktu", "time zone", "timezone", "selisih waktu", "wib", "wita", "wit", "utc", "gmt", "kota", "rapat", "meeting"],
   load: () => import("./WorldClockTool"),

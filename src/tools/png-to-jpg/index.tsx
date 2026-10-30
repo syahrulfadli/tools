@@ -5,7 +5,7 @@ import { PngToJpgPreview } from "./Preview";
 export const pngToJpg: ToolDefinition = {
   slug: "png-ke-jpg",
   name: "PNG ke JPEG",
-  description: "Ubah banyak PNG sekaligus jadi JPEG yang lebih ringan, dengan warna latar untuk area transparan.",
+  description: "Ubah banyak PNG sekaligus menjadi JPEG yang lebih ringan. Area transparan bisa diberi warna latar pilihanmu.",
   category: "file-converter",
   keywords: ["png", "jpg", "jpeg", "webp", "gif", "bmp", "convert", "konversi", "ubah", "kompres", "gambar", "image"],
   load: () => import("./PngToJpgTool"),

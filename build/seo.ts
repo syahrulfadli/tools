@@ -3,9 +3,9 @@ import { join } from "node:path";
 import { loadEnv, type Plugin } from "vite";
 
 const SITE_NAME = "Productivity Tools";
-const HOME_TITLE = "Productivity Tools: kolase foto, konverter PDF, timer, dan jam dunia";
+const HOME_TITLE = "Productivity Tools: kolase foto, olah PDF, QR code, timer, dan jam dunia";
 const HOME_DESCRIPTION =
-  "Kumpulan tools receh untuk produktivitas harian: kolase foto, kompres gambar, kompres PDF, PDF ke gambar, gambar ke PDF, Word ke PDF, PNG ke JPEG, timer, dan jam dunia. Gratis, semua file diproses di browser dan tidak pernah disimpan.";
+  "Kumpulan tools sederhana untuk membantu pekerjaan sehari-hari: kolase foto, kompres gambar, kompres PDF, PDF ke gambar, PDF ke teks, gambar ke PDF, Word ke PDF, PNG ke JPEG, QR code, atur halaman PDF, nomor halaman dan watermark, tanda tangan PDF, timer, Pomodoro, dan jam dunia. Gratis, semua file diproses di browser dan tidak pernah disimpan.";
 const OG_IMAGE = "/icons/icon-512.png";
 
 interface ToolMeta {
@@ -212,9 +212,9 @@ export function seo(): Plugin {
           shell,
           {
             title: `Kredit · ${SITE_NAME}`,
-            description: "Pustaka open source yang menjadi inti tiap tool, lengkap dengan tautan GitHub dan npm.",
+            description: "Library open source di balik tiap tool, lengkap dengan tautan GitHub dan npm.",
             path: "/kredit",
-            fallback: `<p><a href="/">${SITE_NAME}</a></p><h1>Kredit</h1><p>Pustaka open source yang menjadi inti tiap tool: pdf-lib, PDF.js, docx-preview, JSZip, React, dan lainnya.</p>`,
+            fallback: `<p><a href="/">${SITE_NAME}</a></p><h1>Kredit</h1><p>Library open source di balik tiap tool: pdf-lib, PDF.js, docx-preview, JSZip, qrcode-generator, React, dan lainnya.</p>`,
           },
           site,
         ),

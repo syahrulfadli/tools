@@ -5,7 +5,7 @@ import { WordToPdfPreview } from "./Preview";
 export const wordToPdf: ToolDefinition = {
   slug: "word-ke-pdf",
   name: "Word ke PDF",
-  description: "Ubah dokumen Word (.docx) jadi PDF dengan ukuran kertas dan margin dokumen, teks tetap bisa dipilih.",
+  description: "Ubah dokumen Word (.docx) menjadi PDF dengan ukuran kertas dan margin sesuai dokumen aslinya. Teksnya tetap bisa disalin.",
   category: "file-converter",
   keywords: ["word", "docx", "doc", "pdf", "word to pdf", "docx to pdf", "convert", "konversi", "ubah", "dokumen", "surat", "cv", "skripsi", "makalah"],
   load: () => import("./WordToPdfTool"),

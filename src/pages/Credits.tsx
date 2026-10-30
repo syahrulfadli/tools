@@ -13,15 +13,15 @@ export function Credits() {
       <div className="credits">
         <Link to="/" className="credits__back">
           <ArrowLeft size={16} strokeWidth={1.5} aria-hidden="true" />
-          Semua tool
+          Kembali ke semua tool
         </Link>
         <header className="credits__head">
           <h1>Kredit</h1>
-          <p>Pustaka open source yang menjadi inti tiap tool. Terima kasih kepada para pembuat dan pemeliharanya.</p>
+          <p>Tools di sini dibangun dengan bantuan sejumlah library open source. Terima kasih banyak untuk para kreator dan maintainer-nya.</p>
         </header>
 
         <section aria-labelledby="credits-core">
-          <h2 id="credits-core">Pustaka inti tool</h2>
+          <h2 id="credits-core">Library di balik tiap tool</h2>
           <ul className="credits__libs credits__libs--card">
             {Object.entries(libraries).map(([id, library]) => {
               const users = tools.filter((tool) => toolCredits[tool.slug]?.includes(id as LibraryId));
@@ -31,7 +31,7 @@ export function Credits() {
         </section>
 
         <section aria-labelledby="credits-native">
-          <h2 id="credits-native">Tanpa pustaka tambahan</h2>
+          <h2 id="credits-native">Tanpa library tambahan</h2>
           <ul className="credits__libs credits__libs--card">
             {tools
               .filter((tool) => !toolCredits[tool.slug])
@@ -49,7 +49,7 @@ export function Credits() {
         </section>
 
         <section aria-labelledby="credits-shared">
-          <h2 id="credits-shared">Dipakai di seluruh situs</h2>
+          <h2 id="credits-shared">Dipakai di semua halaman</h2>
           <ul className="credits__libs credits__libs--card">
             {shared.map((library) => (
               <LibraryRow key={library.name} library={library} />

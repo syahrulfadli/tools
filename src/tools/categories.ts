@@ -11,22 +11,22 @@ export const categories = [
   {
     id: "file-converter",
     name: "File Converter",
-    description: "Ubah format file tanpa mengunggahnya ke mana pun.",
+    description: "Ubah format file tanpa perlu mengunggahnya ke mana pun.",
   },
   {
     id: "pdf-tools",
     name: "Olah PDF",
-    description: "Gabung dan pisah PDF langsung di browser, tanpa mengunggahnya.",
+    description: "Gabung, pisah, atur halaman, beri nomor, dan tanda tangani PDF langsung di browser, tanpa perlu diunggah.",
   },
   {
     id: "compressor",
     name: "Kompres",
-    description: "Perkecil ukuran gambar dan PDF langsung di browser, tanpa mengunggahnya.",
+    description: "Perkecil ukuran gambar dan PDF langsung di browser, tanpa perlu diunggah.",
   },
   {
     id: "time",
     name: "Waktu",
-    description: "Hitung mundur, ukur durasi, dan cek jam di kota lain tanpa aplikasi tambahan.",
+    description: "Hitung mundur, atur sesi fokus, ukur durasi, dan cek jam di kota lain tanpa perlu memasang aplikasi.",
   },
 ] as const;
 

@@ -1,0 +1,31 @@
+/* PDF ke Teks: teks hasil di area kerja, setinggi sisa panel. */
+
+.text-output {
+  flex: 1;
+  width: 100%;
+  min-height: 360px;
+  padding: 20px;
+  border: 0;
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  resize: none;
+}
+
+.text-output:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.text-skeleton {
+  display: grid;
+  gap: 12px;
+}
+
+.text-skeleton > span {
+  height: 4px;
+}

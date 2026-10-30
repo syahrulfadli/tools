@@ -68,6 +68,8 @@ Semua waktu dalam milidetik; `endAt`/`startedAt` adalah stempel `Date.now()`.
 - **Mode** disimpan sebagai state lokal dan disalin ke `?mode=` untuk tautan. Pembaruan URL React Router berjalan sebagai transition dan bisa tertunda; bila mode dibaca dari URL, Spasi yang ditekan tepat setelah klik tab masih memakai mode lama (ditemukan saat pengujian). Handler keyboard membaca mode lewat ref.
 - **Ukuran angka di cincin** memakai container query (`15.5cqi`) agar selalu ±70% lebar cincin dan tidak menyentuh garis di lebar layar mana pun.
 
+Siklus Pomodoro otomatis (fokus/istirahat bergantian, hitungan sesi) ada di tool terpisah: [Pomodoro](../../pomodoro/docs/README.md). Tool itu memakai ulang `lib/alarm.ts` (dengan `tag` notifikasi sendiri), `lib/hooks.ts`, `lib/time.ts`, dan `timer.css`.
+
 ## Batasan
 
 - Timer berhenti bila tab ditutup atau dimuat ulang (disengaja: tidak ada penyimpanan).
@@ -76,6 +78,5 @@ Semua waktu dalam milidetik; `endAt`/`startedAt` adalah stempel `Date.now()`.
 
 ## Ide pengembangan
 
-- Siklus Pomodoro otomatis (25 kerja / 5 istirahat, hitungan sesi).
 - Beberapa timer bernama sekaligus.
 - Pilihan bunyi alarm.

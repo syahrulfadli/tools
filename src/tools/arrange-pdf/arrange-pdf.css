@@ -1,0 +1,132 @@
+/* Atur Halaman PDF: kisi kartu halaman yang bisa diseret, diputar, dan dihapus. */
+
+.inline-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.inline-form .number-field {
+  display: grid;
+  gap: 6px;
+}
+
+.button-row--flush {
+  margin-top: 0;
+}
+
+.arrange-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+  align-items: start;
+  gap: 20px 16px;
+  margin: 0;
+  list-style: none;
+}
+
+.arrange-card {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.arrange-card[draggable="true"] .arrange-card__well {
+  cursor: grab;
+}
+
+/* Halaman di dalam kotak persegi, supaya putaran 90° tidak mengubah ukuran kartu. */
+.arrange-card__well {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: var(--radius-card);
+  background: var(--raised);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.arrange-card:hover .arrange-card__well {
+  border-color: var(--control);
+}
+
+.arrange-card__sheet {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  transition: transform var(--dur) var(--ease);
+}
+
+.arrange-card__sheet img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.arrange-card__sheet .bone {
+  border-radius: 0;
+}
+
+.arrange-card__badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 8px;
+  border-radius: var(--radius-chip);
+  background: var(--pill-negative-bg);
+  color: var(--pill-negative-ink);
+  font-size: var(--fs-small);
+  font-weight: 500;
+}
+
+.arrange-card.is-deleted .arrange-card__sheet {
+  opacity: 0.35;
+}
+
+.arrange-card.is-dragging {
+  opacity: 0.4;
+}
+
+.arrange-card.is-drop-target .arrange-card__well {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.arrange-card__label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.arrange-card.is-deleted .arrange-card__label {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.arrange-card__position {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.arrange-card__actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 720px) {
+  .arrange-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrange-card__sheet {
+    transition: none;
+  }
+}

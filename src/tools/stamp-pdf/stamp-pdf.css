@@ -1,0 +1,53 @@
+/*
+ * Nomor Halaman & Watermark: teks ditumpuk di atas thumbnail sebagai pratinjau. Ukuran huruf
+ * memakai cqi (persen lebar halaman) supaya sebanding dengan poin PDF di lebar kartu berapa pun.
+ */
+
+.stamp-fields {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.stamp-fields .segmented-field + .segmented-field,
+.stamp-fields .slider + .slider {
+  margin-top: 0;
+}
+
+.stamp-fields .steppers {
+  margin-top: 0;
+}
+
+.stamp-number-input {
+  display: grid;
+  gap: 6px;
+}
+
+.stamp-sheet {
+  container-type: inline-size;
+}
+
+/* Warna teks di sini adalah isi file (bukan chrome), jadi diambil dari pilihan user. */
+.stamp-watermark,
+.stamp-number {
+  position: absolute;
+  font-family: Helvetica, Arial, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.stamp-watermark {
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  font-weight: 700;
+}
+
+.stamp-number {
+  color: var(--paper-ink);
+}
+
+/* Pratinjau di sini tidak memilih halaman, jadi thumbnail tidak diredupkan seperti di PDF ke Gambar. */
+.page.page--static .stamp-sheet img {
+  opacity: 1;
+}

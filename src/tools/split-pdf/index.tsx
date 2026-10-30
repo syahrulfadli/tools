@@ -5,7 +5,7 @@ import { SplitPdfPreview } from "./Preview";
 export const splitPdf: ToolDefinition = {
   slug: "pisah-pdf",
   name: "Pisah PDF",
-  description: "Ambil halaman tertentu dari PDF atau bagi jadi beberapa file menurut rentang atau jumlah halaman.",
+  description: "Ambil halaman yang kamu perlukan dari PDF, atau bagi menjadi beberapa file berdasarkan rentang atau jumlah halaman.",
   category: "pdf-tools",
   keywords: ["split", "pisah", "pisahkan", "potong", "bagi", "ekstrak", "extract", "ambil halaman", "hapus halaman", "pdf", "halaman", "rentang"],
   load: () => import("./SplitPdfTool"),

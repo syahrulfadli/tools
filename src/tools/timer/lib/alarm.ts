@@ -51,10 +51,11 @@ export async function requestNotifications() {
   return Notification.requestPermission();
 }
 
-export function notify(title: string, body: string) {
+/** `tag` membedakan sumber notifikasi (Timer, Pomodoro) agar yang satu tidak menimpa yang lain. */
+export function notify(title: string, body: string, tag = "productivity-tools-timer") {
   if (notificationPermission() !== "granted") return;
   try {
-    const n = new Notification(title, { body, tag: "productivity-tools-timer", requireInteraction: true });
+    const n = new Notification(title, { body, tag, requireInteraction: true });
     n.onclick = () => {
       window.focus();
       n.close();

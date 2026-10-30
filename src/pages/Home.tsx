@@ -44,13 +44,13 @@ export function Home() {
 
   return (
     <AppFrame>
-      <title>Productivity Tools: kolase foto, konverter PDF, timer, dan jam dunia</title>
+      <title>Productivity Tools: kolase foto, olah PDF, QR code, timer, dan jam dunia</title>
       <div className="home">
         <section className="home__hero" aria-labelledby="home-title">
           <h1 id="home-title">Productivity Tools</h1>
-          <p>Kumpulan tools receh untuk produktivitas harian.</p>
+          <p>Kumpulan tools sederhana untuk membantu pekerjaan sehari-hari. Gratis, dan file kamu tidak pernah keluar dari browser.</p>
           <p className="home__credit">
-            Dibangun dengan pustaka open source. <Link to="/kredit">Lihat kredit</Link>
+            Dibangun dengan bantuan library open source. <Link to="/kredit">Lihat kredit</Link>
           </p>
           <form
             className="search"
@@ -70,7 +70,7 @@ export function Home() {
               type="search"
               autoComplete="off"
               spellCheck={false}
-              placeholder="Cari tool, mis. kolase, foto, grid"
+              placeholder="Cari tool, misalnya kolase, PDF, atau kompres"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={(event) => {
@@ -96,7 +96,7 @@ export function Home() {
               </kbd>
             )}
             <span id="search-hint" className="visually-hidden">
-              Tekan Enter untuk membuka hasil pertama.
+              Tekan Enter untuk langsung membuka hasil pertama.
             </span>
           </form>
         </section>
@@ -140,8 +140,8 @@ export function Home() {
             <div className="tools__empty">
               <p>
                 {trimmed
-                  ? `Belum ada tool ${activeCategory ? `${activeCategory.name} ` : ""}untuk “${trimmed}”. Coba kata lain, misalnya “foto” atau “pdf”.`
-                  : `Belum ada tool di ${activeCategory?.name ?? "kategori ini"}.`}
+                  ? `Belum ada tool ${activeCategory ? `${activeCategory.name} ` : ""}untuk “${trimmed}”. Coba kata kunci lain, misalnya “foto” atau “pdf”.`
+                  : `Belum ada tool di ${activeCategory?.name ?? "kategori ini"}. Nantikan tool berikutnya.`}
               </p>
               <button
                 type="button"
@@ -151,7 +151,7 @@ export function Home() {
                   setCategoryId(null);
                 }}
               >
-                Tampilkan semua tool
+                Lihat semua tool
               </button>
             </div>
           )}

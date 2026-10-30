@@ -40,6 +40,8 @@
   --pill-positive-bg: #dcfae5; --pill-positive-ink: #04250e;
   --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
 
+  --paper: #ffffff;               /* kertas dokumen (halaman PDF, QR): putih di kedua tema */
+  --paper-ink: #1a1a1a;           /* tinta di atas kertas dokumen, sama dengan isi PDF hasil */
   --skeleton: #e9eae7;
   --well: #e8e9e5;                /* kanvas tool editor, satu tingkat lebih gelap dari frame */
   --well-hover: #e0e1dd;
@@ -113,6 +115,8 @@
   --pill-positive-bg: #12301f; --pill-positive-ink: #a6efc4;
   --pill-negative-bg: #3a1715; --pill-negative-ink: #ffb4ab;
 
+  --paper: #ffffff;
+  --paper-ink: #1a1a1a;
   --skeleton: #2a2c2f;
   --well: #0c0d0e;
   --well-hover: #161719;

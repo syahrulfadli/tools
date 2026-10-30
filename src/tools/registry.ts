@@ -1,20 +1,26 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { ToolDefinition } from "./types";
 import { categories, findCategory, type Category } from "./categories";
+import { arrangePdf } from "./arrange-pdf";
 import { collage } from "./collage";
 import { compressImage } from "./compress-image";
 import { compressPdf } from "./compress-pdf";
 import { imageToPdf } from "./image-to-pdf";
 import { mergePdf } from "./merge-pdf";
 import { pdfToImage } from "./pdf-to-image";
+import { pdfToText } from "./pdf-to-text";
 import { pngToJpg } from "./png-to-jpg";
+import { pomodoro } from "./pomodoro";
+import { qrCode } from "./qr-code";
+import { signPdf } from "./sign-pdf";
 import { splitPdf } from "./split-pdf";
+import { stampPdf } from "./stamp-pdf";
 import { timer } from "./timer";
 import { wordToPdf } from "./word-to-pdf";
 import { worldClock } from "./world-clock";
 
 /** Daftar semua tool, urut sesuai tampilan di home. Tambah tool baru di sini. */
-export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, wordToPdf, pngToJpg, mergePdf, splitPdf, compressImage, compressPdf, timer, worldClock];
+export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, wordToPdf, pngToJpg, pdfToText, qrCode, mergePdf, splitPdf, arrangePdf, stampPdf, signPdf, compressImage, compressPdf, timer, pomodoro, worldClock];
 
 const lazyCache = new Map<string, LazyExoticComponent<ComponentType>>();
 

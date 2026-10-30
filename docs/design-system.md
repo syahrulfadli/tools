@@ -15,7 +15,7 @@ Tema gelap memakai struktur yang sama, hanya token yang ditimpa di `:root[data-t
 - **Frame paling gelap** (`--ground` #111213), sheet satu langkah lebih terang (`--surface` #1a1b1d), well kanvas lebih gelap dari sheet (`--well`).
 - **Tombol utama dibalik**: `--primary` hampir putih, teksnya `--on-primary` gelap. Chip aktif dan toast ponsel ikut.
 - **Aksen dicerahkan** ke teal tanda merek di favicon (`#5fb3c7`) agar kontras tetap di atas 4.5:1; teks di atas aksen memakai `--on-accent`.
-- **Kertas tetap putih**: halaman PDF, latar kolase pilihan user, dan papan catur transparansi adalah isi file, bukan chrome.
+- **Kertas tetap putih**: halaman PDF, latar kolase pilihan user, kotak QR, kanvas tanda tangan, dan papan catur transparansi adalah isi file, bukan chrome. Pakai token `--paper` (dan `--paper-ink` untuk teks di atasnya), yang sengaja bernilai sama di kedua tema.
 - Pratinjau SVG di home: bagian yang mewakili UI (panah, muka timer) memakai `var(--muted)`, `var(--surface)`, `var(--text)`, `var(--accent)`; bentuk foto/kertas tetap warna tetap.
 - Jangan menulis warna heksadesimal di CSS komponen. Bila butuh warna baru, tambahkan token di kedua blok tokens.css.
 
@@ -29,6 +29,7 @@ Pilihan tema ada di bar atas home: segmented kecil tiga ikon (Terang, Gelap, Iku
 | Home: kategori | Baris chip filter (Semua + tiap kategori, dengan jumlah) di atas daftar; chip aktif terisi hitam. Tiap kategori punya judul 18px + satu kalimat deskripsi. |
 | Tool converter | `ToolBar` + panel pengaturan 300px + area kerja (`.workspace`). Keadaan kosong = tombol besar bergaris putus-putus di area kerja. Di tablet/ponsel area kerja tampil di atas panel. |
 | Tool jam (timer) | `ToolBar` + panel 300px + area kerja dengan tab garis bawah (2px tinta di atas garis 1px). Angka besar di tengah, satu-satunya pengecualian batas 48px untuk layar app karena dibaca dari jauh; di dalam cincin ukurannya mengikuti lebar cincin (`cqi`). Tombol 44px berbentuk pil. |
+| Tool Pomodoro | Sama dengan timer (memakai `timer.css`): tab garis bawah untuk fase (Fokus, Istirahat pendek, Istirahat panjang), cincin, lalu titik sesi 10px (terisi aksen = selesai, garis aksen = sedang berjalan) di atas tombol. |
 | Tool jam dunia | `ToolBar` + panel 300px + area kerja berisi grid kartu jam berdampingan (`auto-fit, minmax(240px, 1fr)`). Angka jam mengikuti lebar kartu (`24cqi`, pengecualian batas 48px seperti timer). Malam di kota itu ditandai kartu `--raised`, bukan ikon. |
 | Tool editor | Bar 44px di atas frame, tanpa garis. Panel 288px, kanvas, dan panel 300px dengan celah 12px dan tepi 8px. Kanvas adalah *well* satu tingkat lebih gelap dari frame. |
 | Tablet (≤1180px) | Kanvas di atas, panel bertumpuk penuh lebar, seksi di dalam panel berdampingan (`auto-fit, minmax(280px, 1fr)`). |

@@ -5,7 +5,7 @@ import { CompressImagePreview } from "./Preview";
 export const compressImage: ToolDefinition = {
   slug: "kompres-gambar",
   name: "Kompres Gambar",
-  description: "Perkecil ukuran file JPEG, PNG, dan WebP sekaligus. Atur kualitas dan sisi terpanjang, lihat hasilnya langsung.",
+  description: "Perkecil ukuran JPEG, PNG, dan WebP sekaligus. Atur kualitas dan dimensinya, lalu lihat hasilnya secara langsung.",
   category: "compressor",
   keywords: ["compress", "kompres", "perkecil", "kecilkan", "resize", "jpg", "jpeg", "png", "webp", "foto", "gambar", "image", "ukuran", "kb", "mb", "optimize"],
   load: () => import("./CompressImageTool"),

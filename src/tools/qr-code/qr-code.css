@@ -1,0 +1,76 @@
+/* QR Code: pratinjau besar di tengah area kerja. Kertas QR tetap putih di kedua tema (isi gambar). */
+
+.qr-input {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.qr-input textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--control);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  line-height: 20px;
+  resize: vertical;
+}
+
+.qr-input textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.qr-input input[aria-invalid="true"] {
+  border-color: var(--negative);
+}
+
+.qr-stage {
+  display: grid;
+  flex: 1;
+  align-content: center;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.qr-preview {
+  width: min(100%, 360px);
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+}
+
+.qr-preview--transparent {
+  background: var(--checker) 0 0 / 16px 16px;
+}
+
+.qr-preview svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.qr-content {
+  max-width: min(100%, 52ch);
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qr-stage .field-note {
+  margin-top: -8px;
+}
+
+.qr-empty {
+  cursor: default;
+}
+
+.qr-empty:hover {
+  border-color: var(--dash);
+}

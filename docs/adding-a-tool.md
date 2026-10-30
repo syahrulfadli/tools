@@ -46,7 +46,7 @@ Tool otomatis muncul di home di bawah kategorinya, ikut filter kategori dan penc
 
 ### Kategori
 
-Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`, gabung/pisah/susun PDF → `pdf-tools`, perkecil ukuran file → `compressor`, hitung/ukur waktu → `time`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
+Kategori ada di `src/tools/categories.ts`. Pakai yang ada bila cocok (converter format file → `file-converter`, olah/susun gambar → `image-editor`, gabung/pisah/susun/tandai PDF → `pdf-tools`, perkecil ukuran file → `compressor`, hitung/ukur waktu → `time`). Bila tidak ada, tambahkan entri baru (`id` kebab-case, `name`, satu kalimat `description`). Urutan array = urutan kelompok di home; kategori tanpa tool tidak tampil.
 
 ## 3. Aturan komponen tool
 
@@ -59,6 +59,8 @@ Mulai dari bahan bersama, jangan menulis ulang:
 | Area kerja | `<main className="panel workspace">`, `.workspace__head`, `.workspace__empty` (tombol besar keadaan kosong) |
 | Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay), `usePasteFiles`, `FileDropzone`, `FailureList`; `.doc-card` (tool.css) untuk kartu satu dokumen yang terbuka |
 | Keluaran | `downloadBlob`, `formatBytes`, `baseName`, `uniqueNamer`, `fileStamp` (`lib/files`), `createZip` (`lib/zip`), `canvasToBlob`/`canvasLimitFactor`/`releaseCanvas` (`lib/canvas`) |
+| Satu PDF yang diolah | `usePdfDocument` (buka dengan pdf-lib + pdf.js, ukuran & rotasi tiap halaman), `useSinglePdfInput` (pilih/seret/tempel satu PDF), `usePdfThumbnails`, `usePageImage` (`components/tool/usePdfDocument`); `PdfDocumentCard`, `PdfWorkspaceState` (`components/tool/PdfDocument`). Contoh: `src/tools/arrange-pdf/` |
+| Menulis teks/gambar di halaman PDF | `visualSize`, `toUserSpace` (`lib/pdf-geometry`): hitung posisi di halaman seperti terlihat, lalu petakan ke ruang PDF (menangani `/Rotate` dan CropBox). Contoh: `src/tools/stamp-pdf/lib/apply.ts` |
 | Skeleton converter | `ConverterSkeleton` dengan judul dan nama seksi panel |
 
 Contoh lengkap pola converter: `src/tools/png-to-jpg/`. Contoh tool yang mencetak HTML ke PDF lewat dialog cetak (iframe pratinjau + `@page`): `src/tools/word-to-pdf/`. Contoh tool tanpa file dengan state yang bertahan antar halaman (store modul + `useSyncExternalStore`): `src/tools/timer/`.

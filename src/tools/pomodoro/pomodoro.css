@@ -1,0 +1,55 @@
+/* Pomodoro: memakai muka jam Timer (timer.css), ditambah label fase dan titik sesi. */
+
+.pomodoro-phase {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.timer-ring .pomodoro-phase {
+  font-size: 4.2cqi;
+}
+
+.pomodoro-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -12px;
+}
+
+.pomodoro-dot {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--control);
+  border-radius: 999px;
+}
+
+.pomodoro-dot.is-done {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.pomodoro-dot.is-current {
+  border-color: var(--accent);
+}
+
+.clock-tab:disabled {
+  color: var(--disabled-ink);
+  cursor: not-allowed;
+}
+
+.clock-tab:disabled .clock-tab__live {
+  color: inherit;
+}
+
+@media (max-width: 720px) {
+  .clock-tabs {
+    gap: 16px;
+    overflow-x: auto;
+  }
+
+  .clock-tab {
+    flex: none;
+  }
+}
