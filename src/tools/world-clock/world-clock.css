@@ -1,0 +1,298 @@
+/*
+ * Jam Dunia. Seperti Timer, angka jam sengaja melewati batas 48px untuk layar app karena
+ * dibaca dari jauh; ukurannya mengikuti lebar kartu (cqi) agar dua jam atau lebih tetap muat
+ * berdampingan.
+ */
+
+/* ---------- Panel: cari kota ---------- */
+
+.world-search {
+  display: grid;
+  gap: 12px;
+}
+
+.world-search__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.world-search__icon {
+  position: absolute;
+  left: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.world-search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 36px;
+  border: 1px solid var(--control);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.world-search input::placeholder {
+  color: var(--faint);
+}
+
+.world-search input:hover:not(:disabled) {
+  border-color: var(--control-hover);
+}
+
+.world-search input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft); /* taste-skill-ignore: cincin fokus, bukan bayangan */
+}
+
+.world-search input:disabled {
+  cursor: not-allowed;
+  background: var(--raised);
+}
+
+.world-search .field-note {
+  margin-top: 0;
+}
+
+.world-search__locate {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+.world-search__error {
+  color: var(--negative);
+}
+
+.world-results {
+  display: grid;
+  gap: 2px;
+  margin: 0 -8px;
+  padding: 0;
+  list-style: none;
+}
+
+.world-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  transition: background var(--dur) var(--ease);
+}
+
+.world-result:hover:not(:disabled) {
+  background: var(--raised);
+}
+
+.world-result:focus-visible {
+  outline-offset: -2px;
+}
+
+.world-result:disabled {
+  cursor: default;
+  color: var(--faint);
+}
+
+.world-result__name {
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.world-result__time {
+  font-weight: 500;
+  text-align: right;
+}
+
+.world-result:disabled .world-result__time {
+  font-size: var(--fs-small);
+  font-weight: 400;
+}
+
+.world-result__detail {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.world-result:disabled .world-result__detail {
+  color: var(--faint);
+}
+
+.world-toggle {
+  margin-top: 16px;
+}
+
+/* ---------- Area kerja: kartu berdampingan ---------- */
+
+.world-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  align-content: start;
+  gap: 12px;
+  padding: 20px;
+}
+
+.world-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  container-type: inline-size;
+}
+
+/* Malam di kota itu: kartu satu langkah lebih gelap, tanpa ikon. */
+.world-card.is-night {
+  background: var(--raised);
+}
+
+.world-card__head h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: var(--fs-section);
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.world-card__head p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.world-card__time {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.08em;
+  font-size: clamp(40px, 24cqi, 112px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.world-card__aside {
+  display: grid;
+  gap: 0.12em;
+  padding-top: 0.1em;
+  color: var(--muted);
+  font-size: 0.3em;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.world-card__date {
+  font-size: 15px;
+}
+
+.world-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+
+.world-card__foot p {
+  color: var(--muted);
+}
+
+.world-card__actions {
+  display: flex;
+  margin-right: -6px;
+  margin-left: auto;
+}
+
+/* ---------- Analog ---------- */
+
+.world-card--analog .world-card__time {
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.25em;
+  font-size: clamp(22px, 9cqi, 32px);
+}
+
+.world-card--analog .world-card__aside {
+  display: flex;
+  gap: 0.25em;
+  font-size: 0.6em;
+}
+
+.world-card--analog .world-card__date {
+  text-align: center;
+}
+
+.world-face {
+  display: block;
+  width: min(100%, 72cqi, 260px);
+  margin: 4px auto 0;
+}
+
+.world-face__dial {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.world-face__tick {
+  stroke: var(--glyph-idle);
+  stroke-width: 1.5;
+}
+
+.world-face__tick--hour {
+  stroke: var(--text);
+  stroke-width: 3;
+}
+
+.world-face__hour,
+.world-face__minute {
+  stroke: var(--text);
+  stroke-linecap: round;
+}
+
+.world-face__hour {
+  stroke-width: 7;
+}
+
+.world-face__minute {
+  stroke-width: 4.5;
+}
+
+.world-face__second {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.world-face__pin {
+  fill: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .world-grid {
+    padding: 16px;
+  }
+
+  .world-card {
+    padding: 16px;
+  }
+}

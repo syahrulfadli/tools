@@ -16,7 +16,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | --- | --- |
 | `worker/index.ts` | Worker: hanya menangani `/api/*`. Aset statis dilayani Workers Static Assets. |
 | `wrangler.jsonc` | Konfigurasi Cloudflare (SPA fallback, `run_worker_first: ["/api/*"]`). |
-| `public/_headers` | Header keamanan + CSP untuk aset statis. Tambah domain/sumber baru di sini bila tool membutuhkannya. |
+| `public/_headers` | Header keamanan + CSP + Permissions-Policy (lokasi diizinkan untuk situs sendiri, dipakai Jam Dunia). Tambah domain/sumber/izin baru di sini bila tool membutuhkannya. |
 | `public/manifest.webmanifest`, `public/icons/` | Manifest PWA dan ikon PNG (dibuat `npm run icons` dari `scripts/make-icons.mjs`). |
 | `public/theme-init.js` | Memasang `data-theme` sebelum render pertama (tanpa kedipan). Logikanya kembar dengan `src/lib/theme.ts`. |
 | `src/service-worker.js` | Templat service worker; plugin di `vite.config.ts` mengisi daftar precache dan menulis `dist/client/sw.js`. |
@@ -60,5 +60,6 @@ Service worker (PWA) hanya aktif di build produksi, jadi uji offline/pemasangan 
   - File Converter → Word ke PDF: [src/tools/word-to-pdf/docs/README.md](src/tools/word-to-pdf/docs/README.md)
   - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
   - Waktu → Timer & Stopwatch: [src/tools/timer/docs/README.md](src/tools/timer/docs/README.md)
+  - Waktu → Jam Dunia: [src/tools/world-clock/docs/README.md](src/tools/world-clock/docs/README.md)
 
 Baca docs tool terkait **sebelum** mengubah tool tersebut.

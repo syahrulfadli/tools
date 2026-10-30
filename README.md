@@ -12,6 +12,7 @@ Kumpulan tools receh untuk produktivitas harian. Berjalan di Cloudflare Workers;
 | Word ke PDF (.docx) | File Converter | `/tools/word-ke-pdf` | [src/tools/word-to-pdf/docs](src/tools/word-to-pdf/docs/README.md) |
 | PNG ke JPEG | File Converter | `/tools/png-ke-jpg` | [src/tools/png-to-jpg/docs](src/tools/png-to-jpg/docs/README.md) |
 | Timer & Stopwatch | Waktu | `/tools/timer` | [src/tools/timer/docs](src/tools/timer/docs/README.md) |
+| Jam Dunia | Waktu | `/tools/jam-dunia` | [src/tools/world-clock/docs](src/tools/world-clock/docs/README.md) |
 
 ## Pasang sebagai aplikasi
 

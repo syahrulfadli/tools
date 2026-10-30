@@ -16,7 +16,7 @@ export const categories = [
   {
     id: "time",
     name: "Waktu",
-    description: "Hitung mundur dan ukur durasi tanpa aplikasi tambahan.",
+    description: "Hitung mundur, ukur durasi, dan cek jam di kota lain tanpa aplikasi tambahan.",
   },
 ] as const;
 

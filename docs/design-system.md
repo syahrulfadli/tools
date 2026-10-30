@@ -29,6 +29,7 @@ Pilihan tema ada di bar atas home: segmented kecil tiga ikon (Terang, Gelap, Iku
 | Home: kategori | Baris chip filter (Semua + tiap kategori, dengan jumlah) di atas daftar; chip aktif terisi hitam. Tiap kategori punya judul 18px + satu kalimat deskripsi. |
 | Tool converter | `ToolBar` + panel pengaturan 300px + area kerja (`.workspace`). Keadaan kosong = tombol besar bergaris putus-putus di area kerja. Di tablet/ponsel area kerja tampil di atas panel. |
 | Tool jam (timer) | `ToolBar` + panel 300px + area kerja dengan tab garis bawah (2px tinta di atas garis 1px). Angka besar di tengah, satu-satunya pengecualian batas 48px untuk layar app karena dibaca dari jauh; di dalam cincin ukurannya mengikuti lebar cincin (`cqi`). Tombol 44px berbentuk pil. |
+| Tool jam dunia | `ToolBar` + panel 300px + area kerja berisi grid kartu jam berdampingan (`auto-fit, minmax(240px, 1fr)`). Angka jam mengikuti lebar kartu (`24cqi`, pengecualian batas 48px seperti timer). Malam di kota itu ditandai kartu `--raised`, bukan ikon. |
 | Tool editor | Bar 44px di atas frame, tanpa garis. Panel 288px, kanvas, dan panel 300px dengan celah 12px dan tepi 8px. Kanvas adalah *well* satu tingkat lebih gelap dari frame. |
 | Tablet (≤1180px) | Kanvas di atas, panel bertumpuk penuh lebar, seksi di dalam panel berdampingan (`auto-fit, minmax(280px, 1fr)`). |
 | Ponsel (≤720px) | Satu kolom, sheet menempel ke tepi, status muncul sebagai toast di bawah. |

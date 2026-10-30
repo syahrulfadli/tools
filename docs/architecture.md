@@ -19,7 +19,7 @@ Browser ──► Cloudflare
 
 - File user dibaca dengan `URL.createObjectURL(file)` dan diproses di canvas. Tidak ada `fetch` yang mengirim file.
 - Object URL dilepas (`URL.revokeObjectURL`) saat foto dihapus, saat "Mulai ulang", dan saat tool ditutup.
-- Yang disimpan di browser hanya preferensi dan file aplikasi: pilihan tema (`localStorage["theme"]`, hanya bila user memilih Terang/Gelap), setelan terakhir Kolase (`localStorage["kolase:setelan:v1"]`), dan cache file aplikasi milik service worker. Tidak ada yang berisi file atau data user. Tool yang mengingat setelan memakai `src/lib/storage.ts` (aman bila penyimpanan diblokir) dan memeriksa nilai yang dibaca sebelum dipakai.
+- Yang disimpan di browser hanya preferensi dan file aplikasi: pilihan tema (`localStorage["theme"]`, hanya bila user memilih Terang/Gelap), setelan terakhir Kolase (`localStorage["kolase:setelan:v1"]`), daftar kota dan tampilan Jam Dunia (`localStorage["jam-dunia:v1"]`), dan cache file aplikasi milik service worker. Tidak ada yang berisi file atau data user. Lokasi GPS (tombol "Pakai lokasi saya" di Jam Dunia) hanya dipakai di browser untuk mencari kota terdekat dari daftar bawaan; koordinat tidak dikirim atau disimpan. Tool yang mengingat setelan memakai `src/lib/storage.ts` (aman bila penyimpanan diblokir) dan memeriksa nilai yang dibaca sebelum dipakai.
 - Worker tidak punya binding penyimpanan. Jika suatu tool kelak butuh pemrosesan di server, proses di memori Worker lalu kembalikan hasilnya, tanpa menulis ke storage atau log, dan dokumentasikan di docs tool tersebut.
 
 ## Routing dan skeleton

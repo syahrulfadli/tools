@@ -7,9 +7,10 @@ import { pdfToImage } from "./pdf-to-image";
 import { pngToJpg } from "./png-to-jpg";
 import { timer } from "./timer";
 import { wordToPdf } from "./word-to-pdf";
+import { worldClock } from "./world-clock";
 
 /** Daftar semua tool, urut sesuai tampilan di home. Tambah tool baru di sini. */
-export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, wordToPdf, pngToJpg, timer];
+export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, wordToPdf, pngToJpg, timer, worldClock];
 
 const lazyCache = new Map<string, LazyExoticComponent<ComponentType>>();
 
