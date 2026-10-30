@@ -129,6 +129,11 @@ a {
   background: var(--active);
 }
 
+.btn--ghost:disabled {
+  background: transparent;
+  color: #b0b3ae;
+}
+
 .btn--icon {
   width: var(--control-height);
   padding: 0;

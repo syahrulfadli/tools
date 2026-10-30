@@ -84,8 +84,13 @@ Taruh perhitungan (geometri, parsing, konversi) di `lib/` sebagai fungsi murni d
 ## 6. Library pihak ketiga
 
 - Impor hanya dari komponen tool (atau `lib/` tool) agar masuk chunk tool, bukan bundle utama.
-- Bila library butuh aset statis (worker, font, wasm), layani dari domain sendiri dan periksa CSP di `public/_headers`. Contoh: pdf.js di `src/tools/pdf-to-jpg/docs/README.md`.
+- Bila library butuh aset statis (worker, font, wasm), layani dari domain sendiri dan periksa CSP di `public/_headers`. Contoh: pdf.js di `src/tools/pdf-to-image/docs/README.md`.
 - Kunci versi mayor yang API-nya sudah diuji.
+- Format file sederhana boleh ditulis sendiri bila menghemat dependensi besar (contoh: ZIP di `src/lib/zip.ts`, PDF di `src/tools/image-to-pdf/lib/pdf-writer.ts`), asalkan diuji dengan pembaca yang independen (pdf.js, Python `zipfile`).
+
+### Satu tool per tujuan, bukan per format
+
+Gabungkan konversi yang tujuannya sama ke satu tool dengan pilihan format, mis. **Gambar ke PDF** (JPEG, PNG, …) dan **PDF ke Gambar** (keluaran JPEG atau PNG), alih-alih tool terpisah per format.
 
 ## 7. Dokumentasi
 

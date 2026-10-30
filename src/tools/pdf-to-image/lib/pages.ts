@@ -34,7 +34,7 @@ export function formatPageRanges(pages: Iterable<number>): string {
 }
 
 /** Nama file halaman dengan nomor sepanjang jumlah digit halaman terbanyak, agar urut di folder. */
-export function pageFilename(base: string, page: number, pageCount: number) {
+export function pageFilename(base: string, page: number, pageCount: number, ext = "jpg") {
   const digits = String(pageCount).length;
-  return `${base}-hal-${String(page).padStart(digits, "0")}.jpg`; // taste-skill-ignore: nomor halaman di nama file
+  return `${base}-hal-${String(page).padStart(digits, "0")}.${ext}`; // taste-skill-ignore: nomor halaman di nama file
 }

@@ -1,0 +1,106 @@
+/* Gambar ke PDF: kisi halaman yang meniru PDF hasil (kertas, margin, letak gambar). */
+
+.pdf-pages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  align-items: start;
+  gap: 24px 20px;
+  margin: 0;
+  list-style: none;
+}
+
+.pdf-page {
+  display: grid;
+  gap: 8px;
+  cursor: grab;
+}
+
+.pdf-page.is-dragging {
+  opacity: 0.4;
+}
+
+/* Bingkai persegi agar halaman potret dan lanskap sejajar dalam satu baris. */
+.pdf-page__frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 12px;
+  border-radius: var(--radius-card);
+  background: var(--well);
+  transition: background var(--dur) var(--ease);
+}
+
+.pdf-page:hover .pdf-page__frame {
+  background: #e0e1dd;
+}
+
+.pdf-page__sheet {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+}
+
+/* Halaman lanskap mengikuti lebar, potret mengikuti tinggi bingkai. */
+@supports (aspect-ratio: 1) {
+  .pdf-page__sheet {
+    width: auto;
+    height: 100%;
+  }
+}
+
+.pdf-page__box {
+  position: absolute;
+  overflow: hidden;
+}
+
+.pdf-page__box img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: none;
+  object-fit: fill;
+  user-select: none;
+}
+
+.pdf-page__label {
+  display: grid;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.pdf-page__label .num {
+  font-weight: 500;
+}
+
+.pdf-page__name {
+  overflow: hidden;
+  color: var(--muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pdf-page__actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pdf-page__btn {
+  width: 30px;
+  height: 30px;
+}
+
+@media (max-width: 720px) {
+  .pdf-pages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 12px;
+  }
+
+  .pdf-page__btn {
+    width: 28px;
+  }
+}

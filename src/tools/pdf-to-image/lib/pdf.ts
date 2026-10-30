@@ -70,7 +70,7 @@ async function renderToCanvas(doc: PDFDocumentProxy, pageNumber: number, scale: 
   canvas.height = Math.floor(viewport.height);
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Browser tidak mendukung canvas 2D.");
-  // JPEG tidak punya transparansi: halaman diberi latar putih seperti kertas.
+  // Halaman diberi latar putih seperti kertas (JPEG tidak punya transparansi; PNG pun tampil sama).
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   await page.render({ canvasContext: ctx, viewport, background: "#ffffff" }).promise;
@@ -78,11 +78,13 @@ async function renderToCanvas(doc: PDFDocumentProxy, pageNumber: number, scale: 
   return canvas;
 }
 
-/** Render satu halaman jadi JPEG. */
-export async function pageToJpeg(doc: PDFDocumentProxy, pageNumber: number, dpi: number, quality: number) {
+export type ImageFormat = "jpeg" | "png";
+
+/** Render satu halaman jadi gambar. `quality` (0–1) hanya berlaku untuk JPEG. */
+export async function pageToImage(doc: PDFDocumentProxy, pageNumber: number, dpi: number, format: ImageFormat, quality: number) {
   const canvas = await renderToCanvas(doc, pageNumber, dpi / PDF_DPI);
   try {
-    const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+    const blob = await canvasToBlob(canvas, `image/${format}`, format === "jpeg" ? quality : undefined);
     return { blob, width: canvas.width, height: canvas.height };
   } finally {
     releaseCanvas(canvas);

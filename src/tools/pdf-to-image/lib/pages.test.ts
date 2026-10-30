@@ -27,5 +27,6 @@ describe("pageFilename", () => {
   it("memberi nol di depan sesuai jumlah halaman", () => {
     expect(pageFilename("laporan", 3, 120)).toBe("laporan-hal-003.jpg");
     expect(pageFilename("laporan", 3, 9)).toBe("laporan-hal-3.jpg");
+    expect(pageFilename("laporan", 12, 40, "png")).toBe("laporan-hal-12.png");
   });
 });

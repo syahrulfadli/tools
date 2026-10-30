@@ -2,12 +2,13 @@ import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { ToolDefinition } from "./types";
 import { categories, findCategory, type Category } from "./categories";
 import { collage } from "./collage";
-import { pdfToJpg } from "./pdf-to-jpg";
+import { imageToPdf } from "./image-to-pdf";
+import { pdfToImage } from "./pdf-to-image";
 import { pngToJpg } from "./png-to-jpg";
 import { timer } from "./timer";
 
 /** Daftar semua tool, urut sesuai tampilan di home. Tambah tool baru di sini. */
-export const tools: ToolDefinition[] = [collage, pdfToJpg, pngToJpg, timer];
+export const tools: ToolDefinition[] = [collage, pdfToImage, imageToPdf, pngToJpg, timer];
 
 const lazyCache = new Map<string, LazyExoticComponent<ComponentType>>();
 

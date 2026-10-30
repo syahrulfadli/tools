@@ -1,5 +1,5 @@
-/** Pratinjau di home: halaman PDF berubah jadi tumpukan foto JPEG. */
-export function PdfToJpgPreview() {
+/** Pratinjau di home: halaman PDF berubah jadi tumpukan gambar. */
+export function PdfToImagePreview() {
   return (
     <svg viewBox="0 0 248 155" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       <path d="M44 22h44l16 16v95H44z" fill="#fff" />

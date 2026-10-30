@@ -39,4 +39,4 @@ node <skill>/scripts/lint.mjs --app src
 node <skill>/scripts/inspect.mjs --app http://localhost:4173/tools/<slug>
 ```
 
-Status terakhir: lint 0 FAIL 0 WARN. Inspector: home 0 FAIL (1 WARN untuk judul hero 76px, disengaja); kolase 0 FAIL (WARN garis putus-putus slot kosong, diizinkan untuk app screen); PDF ke JPEG dan PNG ke JPEG 0 FAIL 0 WARN; Timer & Stopwatch 0 FAIL (WARN ruang kosong di sekitar muka jam yang sengaja dipusatkan).
+Status terakhir: lint 0 FAIL 0 WARN. Inspector: home 0 FAIL (1 WARN untuk judul hero 76px, disengaja); kolase 0 FAIL (WARN garis putus-putus slot kosong, diizinkan untuk app screen); PDF ke Gambar, Gambar ke PDF, dan PNG ke JPEG 0 FAIL; Timer & Stopwatch 0 FAIL (WARN ruang kosong di sekitar muka jam yang sengaja dipusatkan).

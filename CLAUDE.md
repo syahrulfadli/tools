@@ -50,7 +50,8 @@ Setelah build ulang, restart `vite preview`: server lama memegang manifest aset 
 - [docs/design-system.md](docs/design-system.md): token, layout, aturan UI.
 - Tool:
   - Edit Gambar → Kolase Foto: [src/tools/collage/docs/README.md](src/tools/collage/docs/README.md)
-  - File Converter → PDF ke JPEG: [src/tools/pdf-to-jpg/docs/README.md](src/tools/pdf-to-jpg/docs/README.md)
+  - File Converter → PDF ke Gambar: [src/tools/pdf-to-image/docs/README.md](src/tools/pdf-to-image/docs/README.md)
+  - File Converter → Gambar ke PDF: [src/tools/image-to-pdf/docs/README.md](src/tools/image-to-pdf/docs/README.md)
   - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
   - Waktu → Timer & Stopwatch: [src/tools/timer/docs/README.md](src/tools/timer/docs/README.md)
 

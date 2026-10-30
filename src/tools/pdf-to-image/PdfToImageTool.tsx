@@ -8,8 +8,13 @@ import { useFilePicker, usePageFileDrop, usePasteFiles } from "../../components/
 import { baseName, downloadBlob, formatBytes } from "../../lib/files";
 import { createZip, type ZipEntry } from "../../lib/zip";
 import { formatPageRanges, pageFilename, parsePageRanges } from "./lib/pages";
-import { openPdf, pageSize, pageThumbnail, pageToJpeg, PdfPasswordError, type PDFDocumentProxy } from "./lib/pdf";
-import "./pdf-to-jpg.css";
+import { openPdf, pageSize, pageThumbnail, pageToImage, PdfPasswordError, type ImageFormat, type PDFDocumentProxy } from "./lib/pdf";
+import "./pdf-to-image.css";
+
+const FORMATS: { value: ImageFormat; label: string }[] = [
+  { value: "jpeg", label: "JPEG" },
+  { value: "png", label: "PNG" },
+];
 
 const DPI_OPTIONS = [
   { value: 72, label: "72 dpi" },
@@ -41,11 +46,12 @@ function isPdf(file: File) {
   return file.type === "application/pdf" || /\.pdf$/i.test(file.name);
 }
 
-export default function PdfToJpgTool() {
+export default function PdfToImageTool() {
   const [doc, setDoc] = useState<Doc>({ phase: "empty" });
   const [thumbs, setThumbs] = useState<Record<number, Thumb>>({});
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [dpi, setDpi] = useState(150);
+  const [format, setFormat] = useState<ImageFormat>("jpeg");
   const [quality, setQuality] = useState(90);
   const [size, setSize] = useState<{ width: number; height: number; limited: boolean } | null>(null);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -147,7 +153,7 @@ export default function PdfToJpgTool() {
   // Pengaturan berubah: pesan unduhan lama tidak berlaku lagi.
   useEffect(() => {
     setStatus((current) => (current.kind === "converting" ? current : { kind: "idle" }));
-  }, [selected, dpi, quality]);
+  }, [selected, dpi, quality, format]);
 
   function togglePage(page: number, event: MouseEvent) {
     setSelected((current) => {
@@ -179,19 +185,20 @@ export default function PdfToJpgTool() {
     if (!ready || selected.size === 0) return;
     const pages = [...selected].sort((a, b) => a - b);
     const base = baseName(ready.file.name);
+    const ext = format === "jpeg" ? "jpg" : "png";
     cancelled.current = false;
     setStatus({ kind: "converting", done: 0, total: pages.length });
     try {
       const entries: ZipEntry[] = [];
       for (const [i, page] of pages.entries()) {
         if (cancelled.current) return setStatus({ kind: "cancelled" });
-        const { blob } = await pageToJpeg(ready.pdf, page, dpi, quality / 100);
-        entries.push({ name: pageFilename(base, page, ready.pageCount), data: blob });
+        const { blob } = await pageToImage(ready.pdf, page, dpi, format, quality / 100);
+        entries.push({ name: pageFilename(base, page, ready.pageCount, ext), data: blob });
         setStatus({ kind: "converting", done: i + 1, total: pages.length });
       }
       if (cancelled.current) return setStatus({ kind: "cancelled" });
       const [single] = entries;
-      const out = entries.length === 1 ? { name: single.name, blob: single.data as Blob } : { name: `${base}-jpg.zip`, blob: await createZip(entries) };
+      const out = entries.length === 1 ? { name: single.name, blob: single.data as Blob } : { name: `${base}-${ext}.zip`, blob: await createZip(entries) };
       downloadBlob(out.blob, out.name);
       setStatus({ kind: "done", filename: out.name, bytes: out.blob.size, count: entries.length });
     } catch (error) {
@@ -208,15 +215,16 @@ export default function PdfToJpgTool() {
   }
 
   const thumbsDone = Object.keys(thumbs).length;
+  const formatLabel = format === "jpeg" ? "JPEG" : "PNG";
   const primaryLabel =
-    selected.size <= 1 ? "Unduh JPEG" : `Unduh ${selected.size.toLocaleString("id-ID")} JPEG (ZIP)`;
+    selected.size <= 1 ? `Unduh ${formatLabel}` : `Unduh ${selected.size.toLocaleString("id-ID")} ${formatLabel} (ZIP)`;
 
   return (
     <div className="tool" {...dropProps}>
-      <title>PDF ke JPEG · Productivity Tools</title>
+      <title>PDF ke Gambar · Productivity Tools</title>
 
       <ToolBar
-        title="PDF ke JPEG"
+        title="PDF ke Gambar"
         pill={ready ? `${selected.size} dari ${pageCount} halaman dipilih` : undefined}
         status={
           <>
@@ -295,9 +303,16 @@ export default function PdfToJpgTool() {
             </p>
           </PanelSection>
 
-          <PanelSection title="Kualitas JPEG">
-            <Slider label="Kualitas" value={quality} min={50} max={100} display={`${quality}%`} onChange={setQuality} />
-            <p className="field-note">Makin tinggi makin tajam, tapi file makin besar. 85–92% biasanya pas.</p>
+          <PanelSection title="Format gambar">
+            <Segmented label="Simpan sebagai" options={FORMATS} value={format} onChange={setFormat} />
+            {format === "jpeg" ? (
+              <>
+                <Slider label="Kualitas JPEG" value={quality} min={50} max={100} display={`${quality}%`} onChange={setQuality} />
+                <p className="field-note">JPEG ringan, cocok untuk dibagikan. Makin tinggi kualitasnya makin tajam, tapi file makin besar; 85–92% biasanya pas.</p>
+              </>
+            ) : (
+              <p className="field-note">PNG tanpa kompresi lossy: teks dan garis tetap tajam, tapi file jauh lebih besar dari JPEG.</p>
+            )}
           </PanelSection>
 
           <PanelSection title="Halaman" aside={ready ? `${selected.size} dari ${pageCount}` : undefined}>
@@ -344,7 +359,7 @@ export default function PdfToJpgTool() {
             <button type="button" className="workspace__empty" onClick={picker.open}>
               <FilePlus2 size={32} strokeWidth={1.5} aria-hidden="true" />
               <strong>Pilih file PDF</strong>
-              <span>Atau seret ke sini. Tiap halaman jadi satu JPEG; PDF tidak diunggah ke mana pun.</span>
+              <span>Atau seret ke sini. Tiap halaman jadi satu gambar JPEG atau PNG; PDF tidak diunggah ke mana pun.</span>
             </button>
           )}
 
@@ -413,7 +428,7 @@ export default function PdfToJpgTool() {
                 note={
                   thumbsDone < pageCount
                     ? `Menyiapkan pratinjau ${thumbsDone} dari ${pageCount}…`
-                    : `${selected.size} halaman akan diubah ke JPEG`
+                    : `${selected.size} halaman akan diubah ke ${formatLabel}`
                 }
               />
               <ul className="workspace__body page-grid">
