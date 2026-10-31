@@ -23,10 +23,26 @@ export interface NumberOptions {
   firstNumber: number;
 }
 
+export type WatermarkKind = "text" | "image";
+
+/** Gambar watermark yang sudah diubah ke PNG (lihat `image.ts`). */
+export interface WatermarkImage {
+  png: Uint8Array;
+  /** Piksel. */
+  width: number;
+  height: number;
+}
+
 export interface WatermarkOptions {
   enabled: boolean;
+  kind: WatermarkKind;
   text: string;
+  /** Ukuran huruf watermark teks, poin. */
   size: number;
+  /** Watermark gambar; null bila belum dipilih. */
+  image: WatermarkImage | null;
+  /** Ukuran watermark gambar: muat di dalam kotak sebesar pecahan ini dari lebar dan tinggi halaman (0–1). */
+  scale: number;
   /** 0–1. */
   opacity: number;
   /** Derajat, berlawanan jarum jam (45 = miring dari kiri bawah ke kanan atas). */
@@ -77,10 +93,27 @@ export function numberOrigin(page: { width: number; height: number }, textWidth:
   return { x, y };
 }
 
+/** Titik awal kotak `width`×`height` (diputar `angle` pada sudut kiri bawahnya) agar tengahnya tepat di tengah halaman. */
+export function centeredOrigin(page: { width: number; height: number }, width: number, height: number, angle: number) {
+  const center = rotateVector(width / 2, height / 2, angle);
+  return { x: page.width / 2 - center.x, y: page.height / 2 - center.y };
+}
+
 /** Titik awal teks watermark agar tengah teks (yang diputar `angle`) tepat di tengah halaman. */
 export function watermarkOrigin(page: { width: number; height: number }, textWidth: number, size: number, angle: number) {
-  const center = rotateVector(textWidth / 2, (size * CAP_HEIGHT) / 2, angle);
-  return { x: page.width / 2 - center.x, y: page.height / 2 - center.y };
+  return centeredOrigin(page, textWidth, size * CAP_HEIGHT, angle);
+}
+
+/** Ukuran watermark gambar (poin): muat di kotak `scale` × halaman, rasio gambar tetap. */
+export function imageWatermarkSize(page: { width: number; height: number }, image: { width: number; height: number }, scale: number) {
+  const fit = Math.min((page.width * scale) / image.width, (page.height * scale) / image.height);
+  return { width: image.width * fit, height: image.height * fit };
+}
+
+/** Apakah watermark punya isi yang bisa ditulis (teks tidak kosong, atau gambar sudah dipilih). */
+export function hasWatermark(watermark: WatermarkOptions) {
+  if (!watermark.enabled) return false;
+  return watermark.kind === "image" ? watermark.image !== null : watermark.text.trim() !== "";
 }
 
 /**

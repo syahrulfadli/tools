@@ -1,25 +1,26 @@
-import { useEffect, useState, type CSSProperties } from "react";
-import { Download, LoaderCircle } from "lucide-react";
-import { Bone } from "../../components/Skeleton";
+import { useEffect, useRef, useState } from "react";
+import { Download, ImagePlus, LoaderCircle } from "lucide-react";
 import { ToolBar } from "../../components/tool/ToolBar";
 import { ColorSwatches, PanelSection, Segmented, Slider, Toggle } from "../../components/tool/controls";
-import { FailureList } from "../../components/tool/FileDropzone";
+import { FailureList, FileDropzone } from "../../components/tool/FileDropzone";
+import { useFilePicker } from "../../components/tool/fileInput";
 import { PdfDocumentCard, PdfWorkspaceState } from "../../components/tool/PdfDocument";
 import { usePdfDocument, usePdfThumbnails, useSinglePdfInput } from "../../components/tool/usePdfDocument";
 import { baseName, downloadBlob, formatBytes } from "../../lib/files";
 import { visualSize } from "../../lib/pdf-geometry";
+import { PageZoom } from "./components/PageZoom";
+import { StampedSheet } from "./components/StampedSheet";
 import { stampPdf } from "./lib/apply";
+import { WATERMARK_IMAGE_ACCEPT, isImageFile, loadWatermarkImage } from "./lib/image";
 import {
-  CAP_HEIGHT,
   NUMBER_FORMATS,
-  PT_PER_MM,
-  formatPageNumber,
+  hasWatermark,
   lastPageNumber,
-  pageNumberFor,
   unsupportedChars,
   type Horizontal,
   type NumberOptions,
   type Vertical,
+  type WatermarkKind,
   type WatermarkOptions,
 } from "./lib/stamp";
 import "../pdf-to-image/pdf-to-image.css";
@@ -43,6 +44,11 @@ const ANGLES: { value: number; label: string }[] = [
   { value: 0, label: "Datar" },
 ];
 
+const KINDS: { value: WatermarkKind; label: string }[] = [
+  { value: "text", label: "Teks" },
+  { value: "image", label: "Gambar" },
+];
+
 const WATERMARK_COLORS = [
   { value: "#808080", label: "Abu" },
   { value: "#c4242a", label: "Merah" },
@@ -61,8 +67,52 @@ export default function StampPdfTool() {
     startPage: 1,
     firstNumber: 1,
   });
-  const [watermark, setWatermark] = useState<WatermarkOptions>({ enabled: false, text: "RAHASIA", size: 72, opacity: 0.2, angle: 45, color: "#808080" });
+  const [watermark, setWatermark] = useState<WatermarkOptions>({
+    enabled: false,
+    kind: "text",
+    text: "RAHASIA",
+    size: 72,
+    image: null,
+    scale: 0.5,
+    opacity: 0.2,
+    angle: 45,
+    color: "#808080",
+  });
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  // Halaman yang sedang diperbesar; null = dialog tertutup.
+  const [zoomPage, setZoomPage] = useState<number | null>(null);
+
+  // Gambar watermark: nama file dan object URL pratinjau. PNG-nya ada di `watermark.image`.
+  const [logo, setLogo] = useState<{ name: string; url: string } | null>(null);
+  const [logoState, setLogoState] = useState<{ loading: boolean; error: string | null }>({ loading: false, error: null });
+  const logoUrl = useRef<string | null>(null);
+  useEffect(() => () => void (logoUrl.current && URL.revokeObjectURL(logoUrl.current)), []);
+
+  async function pickLogo(files: File[]) {
+    const file = files[0];
+    if (!file) return;
+    if (!isImageFile(file)) return setLogoState({ loading: false, error: `${file.name} bukan file gambar.` });
+    setLogoState({ loading: true, error: null });
+    try {
+      const { url, ...image } = await loadWatermarkImage(file);
+      if (logoUrl.current) URL.revokeObjectURL(logoUrl.current);
+      logoUrl.current = url;
+      setLogo({ name: file.name, url });
+      patchWatermark({ image });
+      setLogoState({ loading: false, error: null });
+    } catch (error) {
+      setLogoState({ loading: false, error: (error as Error).message });
+    }
+  }
+
+  function removeLogo() {
+    if (logoUrl.current) URL.revokeObjectURL(logoUrl.current);
+    logoUrl.current = null;
+    setLogo(null);
+    patchWatermark({ image: null });
+  }
+
+  const logoPicker = useFilePicker(WATERMARK_IMAGE_ACCEPT, false, (files) => void pickLogo(files));
 
   const working = status.kind === "working";
   const ready = doc.phase === "ready" ? doc : null;
@@ -82,11 +132,10 @@ export default function StampPdfTool() {
     if (ready) setNumbers((current) => (current.startPage > ready.pages.length ? { ...current, startPage: 1 } : current));
   }, [ready]);
 
-  const watermarkText = watermark.text.trim();
-  const badChars = unsupportedChars(watermark.text);
+  const badChars = watermark.kind === "text" ? unsupportedChars(watermark.text) : [];
   const last = lastPageNumber(pageCount, numbers);
   const numbered = numbers.enabled ? Math.max(0, pageCount - numbers.startPage + 1) : 0;
-  const hasWork = numbered > 0 || (watermark.enabled && watermarkText !== "");
+  const hasWork = numbered > 0 || hasWatermark(watermark);
   const canSave = ready !== null && hasWork && (!watermark.enabled || badChars.length === 0) && !working;
 
   async function save() {
@@ -177,30 +226,82 @@ export default function StampPdfTool() {
           <PanelSection title="Watermark">
             <Toggle
               label="Tambah watermark"
-              description="Teks transparan di tengah setiap halaman."
+              description="Teks atau gambar transparan di tengah setiap halaman."
               checked={watermark.enabled}
               onChange={(enabled) => patchWatermark({ enabled })}
             />
             {watermark.enabled && (
               <div className="stamp-fields">
-                <label className="number-field number-field--wide">
-                  <span className="segmented-field__label">Teks</span>
-                  <input
-                    type="text"
-                    value={watermark.text}
-                    maxLength={60}
-                    placeholder="mis. RAHASIA, DRAF, CONTOH"
-                    onChange={(event) => patchWatermark({ text: event.target.value })}
-                    aria-invalid={badChars.length ? true : undefined}
-                    aria-describedby="watermark-help"
-                  />
-                </label>
-                {badChars.length > 0 && (
-                  <p id="watermark-help" className="field-note field-note--error" role="alert">
-                    Karakter {badChars.slice(0, 5).join(" ")} tidak didukung font PDF standar. Pakai huruf Latin, angka, dan tanda baca umum.
-                  </p>
+                <Segmented label="Jenis" options={KINDS} value={watermark.kind} onChange={(kind) => patchWatermark({ kind })} />
+                {watermark.kind === "text" ? (
+                  <>
+                    <label className="number-field number-field--wide">
+                      <span className="segmented-field__label">Teks</span>
+                      <input
+                        type="text"
+                        value={watermark.text}
+                        maxLength={60}
+                        placeholder="mis. RAHASIA, DRAF, CONTOH"
+                        onChange={(event) => patchWatermark({ text: event.target.value })}
+                        aria-invalid={badChars.length ? true : undefined}
+                        aria-describedby="watermark-help"
+                      />
+                    </label>
+                    {badChars.length > 0 && (
+                      <p id="watermark-help" className="field-note field-note--error" role="alert">
+                        Karakter {badChars.slice(0, 5).join(" ")} tidak didukung font PDF standar. Pakai huruf Latin, angka, dan tanda baca umum.
+                      </p>
+                    )}
+                    <Slider label="Ukuran huruf" min={24} max={160} step={4} value={watermark.size} display={`${watermark.size} pt`} onChange={(size) => patchWatermark({ size })} />
+                  </>
+                ) : (
+                  <>
+                    {logo ? (
+                      <div className="doc-card stamp-logo">
+                        <img src={logo.url} alt="" />
+                        <p>
+                          <span className="doc-card__name" title={logo.name}>
+                            {logo.name}
+                          </span>
+                          {watermark.image && (
+                            <span className="num">
+                              {watermark.image.width} × {watermark.image.height} px
+                            </span>
+                          )}
+                        </p>
+                        <div className="button-row">
+                          <button type="button" className="btn" onClick={logoPicker.open} disabled={working || logoState.loading}>
+                            Ganti gambar
+                          </button>
+                          <button type="button" className="btn btn--ghost" onClick={removeLogo} disabled={working}>
+                            Hapus
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <FileDropzone
+                        icon={logoState.loading ? <LoaderCircle className="spin" size={20} strokeWidth={1.5} aria-hidden="true" /> : <ImagePlus size={20} strokeWidth={1.5} aria-hidden="true" />}
+                        title={logoState.loading ? "Menyiapkan gambar…" : "Pilih gambar"}
+                        hint="PNG, JPEG, WebP, atau SVG, mis. logo. PNG transparan memberi hasil paling rapi."
+                        onClick={logoPicker.open}
+                      />
+                    )}
+                    {logoState.error && (
+                      <p className="field-note field-note--error" role="alert">
+                        {logoState.error}
+                      </p>
+                    )}
+                    <Slider
+                      label="Ukuran"
+                      min={10}
+                      max={100}
+                      step={5}
+                      value={Math.round(watermark.scale * 100)}
+                      display={`${Math.round(watermark.scale * 100)}% halaman`}
+                      onChange={(value) => patchWatermark({ scale: value / 100 })}
+                    />
+                  </>
                 )}
-                <Slider label="Ukuran huruf" min={24} max={160} step={4} value={watermark.size} display={`${watermark.size} pt`} onChange={(size) => patchWatermark({ size })} />
                 <Slider
                   label="Kepekatan"
                   min={5}
@@ -210,10 +311,12 @@ export default function StampPdfTool() {
                   onChange={(value) => patchWatermark({ opacity: value / 100 })}
                 />
                 <Segmented label="Arah" options={ANGLES} value={watermark.angle} onChange={(angle) => patchWatermark({ angle })} />
-                <div className="segmented-field">
-                  <span className="segmented-field__label">Warna</span>
-                  <ColorSwatches label="Warna watermark" options={WATERMARK_COLORS} value={watermark.color} onChange={(color) => patchWatermark({ color })} />
-                </div>
+                {watermark.kind === "text" && (
+                  <div className="segmented-field">
+                    <span className="segmented-field__label">Warna</span>
+                    <ColorSwatches label="Warna watermark" options={WATERMARK_COLORS} value={watermark.color} onChange={(color) => patchWatermark({ color })} />
+                  </div>
+                )}
               </div>
             )}
           </PanelSection>
@@ -235,43 +338,19 @@ export default function StampPdfTool() {
                   {ready.pdf && Object.keys(thumbs).length < pageCount
                     ? `Menyiapkan pratinjau ${Object.keys(thumbs).length} dari ${pageCount}…`
                     : hasWork
-                      ? "Pratinjau perkiraan; posisi pasti mengikuti PDF hasil"
+                      ? "Klik halaman untuk memperbesar. Pratinjau perkiraan; posisi pasti mengikuti PDF hasil"
                       : "Nyalakan nomor halaman atau watermark di panel kiri"}
                 </p>
               </header>
               <ul className="workspace__body page-grid">
                 {ready.pages.map((box, i) => {
                   const page = i + 1;
-                  const thumb = thumbs[page];
-                  const size = visualSize(box);
-                  const n = numbers.enabled ? pageNumberFor(page, numbers) : null;
-                  // Ukuran dalam cqi (persen lebar halaman) agar pratinjau sebanding dengan poin PDF.
-                  const pt = (value: number) => `${(value / size.width) * 100}cqi`;
-                  const margin = numbers.marginMm * PT_PER_MM;
-                  const numberStyle: CSSProperties = {
-                    fontSize: pt(numbers.size),
-                    [numbers.vertical]: `${(margin / size.height) * 100}%`,
-                    ...(numbers.horizontal === "center" ? { left: "50%", translate: "-50% 0" } : { [numbers.horizontal]: `${(margin / size.width) * 100}%` }),
-                  };
                   return (
-                    <li key={page} className="page page--static">
-                      <span className="page__sheet stamp-sheet" style={{ aspectRatio: `${size.width} / ${size.height}` }}>
-                        {thumb ? <img src={thumb.url} alt="" /> : <Bone w="100%" h="100%" r={0} />}
-                        {watermark.enabled && watermarkText && (
-                          <span
-                            className="stamp-watermark"
-                            style={{ fontSize: pt(watermark.size), opacity: watermark.opacity, color: watermark.color, rotate: `${-watermark.angle}deg` }}
-                          >
-                            {watermarkText}
-                          </span>
-                        )}
-                        {n !== null && (
-                          <span className={`stamp-number stamp-number--${numbers.vertical}`} style={{ ...numberStyle, lineHeight: CAP_HEIGHT }}>
-                            {formatPageNumber(numbers.format, n, last)}
-                          </span>
-                        )}
-                      </span>
-                      <span className="page__label num">Hal. {page}</span>
+                    <li key={page}>
+                      <button type="button" className="page page--static page--zoom" onClick={() => setZoomPage(page)} aria-label={`Perbesar halaman ${page}`}>
+                        <StampedSheet box={box} page={page} src={thumbs[page]?.url} numbers={numbers} last={last} watermark={watermark} imageUrl={logo?.url} />
+                        <span className="page__label num">Hal. {page}</span>
+                      </button>
                     </li>
                   );
                 })}
@@ -281,7 +360,37 @@ export default function StampPdfTool() {
         </main>
       </div>
 
+      {ready && zoomPage !== null && (
+        <PageZoom
+          pdf={ready.pdf}
+          page={zoomPage}
+          count={pageCount}
+          fallback={thumbs[zoomPage]?.url}
+          onNavigate={setZoomPage}
+          onClose={() => setZoomPage(null)}
+        >
+          {(src) => {
+            const box = ready.pages[zoomPage - 1];
+            const size = visualSize(box);
+            return (
+              <StampedSheet
+                box={box}
+                page={zoomPage}
+                src={src}
+                numbers={numbers}
+                last={last}
+                watermark={watermark}
+                imageUrl={logo?.url}
+                className="page-zoom__sheet"
+                style={{ ["--ratio" as string]: size.width / size.height }}
+              />
+            );
+          }}
+        </PageZoom>
+      )}
+
       {input.picker.input}
+      {logoPicker.input}
       {input.overlay}
     </div>
   );

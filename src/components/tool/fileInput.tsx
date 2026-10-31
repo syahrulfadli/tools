@@ -7,7 +7,31 @@ import { useEffect, useRef, useState, type DragEvent, type ReactNode } from "rea
  */
 export function usePageFileDrop(onFiles: (files: File[]) => void, label = "Lepaskan untuk menambah file") {
   const [dragging, setDragging] = useState(false);
-  const hasFiles = (event: DragEvent) => Array.from(event.dataTransfer.types).includes("Files");
+  // Seretan yang dimulai di dalam halaman (mis. teks terpilih) bukan file dari luar.
+  const internal = useRef(false);
+  const hasFiles = (event: DragEvent) => !internal.current && Array.from(event.dataTransfer.types).includes("Files");
+
+  // Gambar di halaman tool (thumbnail PDF, pratinjau) tidak bisa diseret. Di Chrome seretan gambar
+  // membawa tipe "Files", jadi tanpa ini overlay "lepaskan file" muncul dan thumbnail ikut terunggah.
+  // Elemen yang memang bisa diseret (`draggable="true"`, mis. foto kolase) tidak tersentuh.
+  useEffect(() => {
+    function onDragStart(event: globalThis.DragEvent) {
+      const target = event.target;
+      if (target instanceof HTMLImageElement && !target.closest('[draggable="true"]')) return event.preventDefault();
+      internal.current = true;
+    }
+    function onDragEnd() {
+      internal.current = false;
+    }
+    document.addEventListener("dragstart", onDragStart);
+    document.addEventListener("dragend", onDragEnd);
+    document.addEventListener("drop", onDragEnd);
+    return () => {
+      document.removeEventListener("dragstart", onDragStart);
+      document.removeEventListener("dragend", onDragEnd);
+      document.removeEventListener("drop", onDragEnd);
+    };
+  }, []);
 
   const dropProps = {
     onDragEnter: (event: DragEvent<HTMLElement>) => {

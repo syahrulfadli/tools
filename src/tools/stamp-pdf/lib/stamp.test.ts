@@ -1,12 +1,15 @@
 import { PDFDocument, degrees } from "pdf-lib";
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { OPS, getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { describe, expect, it } from "vitest";
 import { stampPdf } from "./apply";
 import {
   CAP_HEIGHT,
   PT_PER_MM,
+  centeredOrigin,
   formatPageNumber,
+  hasWatermark,
   hexToRgb,
+  imageWatermarkSize,
   lastPageNumber,
   numberOrigin,
   pageNumberFor,
@@ -17,7 +20,9 @@ import {
 } from "./stamp";
 
 const numbers: NumberOptions = { enabled: true, format: "n", vertical: "bottom", horizontal: "center", size: 10, marginMm: 10, startPage: 1, firstNumber: 1 };
-const noWatermark: WatermarkOptions = { enabled: false, text: "", size: 60, opacity: 0.2, angle: 45, color: "#808080" };
+const noWatermark: WatermarkOptions = { enabled: false, kind: "text", text: "", size: 60, image: null, scale: 0.5, opacity: 0.2, angle: 45, color: "#808080" };
+/** PNG 1×1 transparan. */
+const PNG_1X1 = Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="), (c) => c.charCodeAt(0));
 
 describe("nomor halaman", () => {
   it("menulis format yang dipilih", () => {
@@ -55,6 +60,32 @@ describe("watermark", () => {
     const o = watermarkOrigin({ width: 600, height: 800 }, 200, 50, 45);
     expect(o.x).toBeLessThan(300);
     expect(o.y).toBeLessThan(400);
+  });
+
+  it("kotak yang diputar tetap berpusat di tengah halaman", () => {
+    const page = { width: 600, height: 800 };
+    for (const angle of [0, 30, 45, 90]) {
+      const o = centeredOrigin(page, 200, 100, angle);
+      const rad = (angle * Math.PI) / 180;
+      // Tengah kotak = titik awal + (lebar/2, tinggi/2) yang diputar.
+      expect(o.x + 100 * Math.cos(rad) - 50 * Math.sin(rad)).toBeCloseTo(300);
+      expect(o.y + 100 * Math.sin(rad) + 50 * Math.cos(rad)).toBeCloseTo(400);
+    }
+  });
+
+  it("gambar dimuat di kotak pecahan halaman dengan rasio tetap", () => {
+    const page = { width: 600, height: 800 };
+    expect(imageWatermarkSize(page, { width: 400, height: 200 }, 0.5)).toEqual({ width: 300, height: 150 });
+    // Gambar tinggi dibatasi tinggi kotak (400), bukan lebarnya.
+    expect(imageWatermarkSize(page, { width: 100, height: 400 }, 0.5)).toEqual({ width: 100, height: 400 });
+  });
+
+  it("hanya dianggap ada bila isinya ada", () => {
+    expect(hasWatermark({ ...noWatermark, enabled: true, text: "  " })).toBe(false);
+    expect(hasWatermark({ ...noWatermark, enabled: true, text: "DRAF" })).toBe(true);
+    expect(hasWatermark({ ...noWatermark, enabled: true, kind: "image" })).toBe(false);
+    expect(hasWatermark({ ...noWatermark, enabled: true, kind: "image", image: { png: PNG_1X1, width: 1, height: 1 } })).toBe(true);
+    expect(hasWatermark({ ...noWatermark, kind: "image", image: { png: PNG_1X1, width: 1, height: 1 } })).toBe(false);
   });
 });
 
@@ -123,5 +154,18 @@ describe("stampPdf", () => {
     const file = await makePdf([0, 0, 0]);
     const pages = await readText(await stampPdf(file, { ...numbers, startPage: 2, format: "page-n-of" }, { ...noWatermark, enabled: true, text: "RAHASIA" }, () => {}));
     expect(pages.map((items) => items.map((item) => item.str).sort())).toEqual([["RAHASIA"], ["Halaman 1 dari 2", "RAHASIA"], ["Halaman 2 dari 2", "RAHASIA"]]);
+  });
+
+  it("menulis watermark gambar di setiap halaman tanpa teks watermark", async () => {
+    const file = await makePdf([0, 90]);
+    const watermark: WatermarkOptions = { ...noWatermark, enabled: true, kind: "image", text: "RAHASIA", image: { png: PNG_1X1, width: 1, height: 1 } };
+    const blob = await stampPdf(file, { ...numbers, enabled: false }, watermark, () => {});
+    expect((await readText(blob)).flat()).toEqual([]);
+    const pdf = await getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const ops = await (await pdf.getPage(p)).getOperatorList();
+      expect(ops.fnArray.filter((fn) => fn === OPS.paintImageXObject)).toHaveLength(1);
+    }
+    await pdf.destroy();
   });
 });

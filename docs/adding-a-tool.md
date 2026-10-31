@@ -57,7 +57,7 @@ Mulai dari bahan bersama, jangan menulis ulang:
 | Kerangka halaman | `<div className="tool" {...dropProps}>` + `ToolBar` + `<div className="tool-body tool-body--sidebar">` (panel 300 px + area kerja) |
 | Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches`, `Toggle` dari `components/tool/controls`; `.chip` (base.css) untuk preset/filter |
 | Area kerja | `<main className="panel workspace">`, `.workspace__head`, `.workspace__empty` (tombol besar keadaan kosong) |
-| Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay), `usePasteFiles`, `FileDropzone`, `FailureList`; `.doc-card` (tool.css) untuk kartu satu dokumen yang terbuka |
+| Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay; gambar di halaman otomatis tidak bisa diseret, seretan dari dalam halaman tidak memicu overlay), `usePasteFiles`, `FileDropzone`, `FailureList`; `.doc-card` (tool.css) untuk kartu satu dokumen yang terbuka |
 | Keluaran | `downloadBlob`, `formatBytes`, `baseName`, `uniqueNamer`, `fileStamp` (`lib/files`), `createZip` (`lib/zip`), `canvasToBlob`/`canvasLimitFactor`/`releaseCanvas` (`lib/canvas`) |
 | Satu PDF yang diolah | `usePdfDocument` (buka dengan pdf-lib + pdf.js, ukuran & rotasi tiap halaman), `useSinglePdfInput` (pilih/seret/tempel satu PDF), `usePdfThumbnails`, `usePageImage` (`components/tool/usePdfDocument`); `PdfDocumentCard`, `PdfWorkspaceState` (`components/tool/PdfDocument`). Contoh: `src/tools/arrange-pdf/` |
 | Menulis teks/gambar di halaman PDF | `visualSize`, `toUserSpace` (`lib/pdf-geometry`): hitung posisi di halaman seperti terlihat, lalu petakan ke ruang PDF (menangani `/Rotate` dan CropBox). Contoh: `src/tools/stamp-pdf/lib/apply.ts` |
