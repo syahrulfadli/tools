@@ -9,7 +9,7 @@ Menggabung beberapa PDF jadi satu, sesuai urutan daftar. Semua proses di browser
 ## Cara pakai
 
 1. Tambah PDF (tombol, seret ke halaman, atau tempel). Bisa banyak, bisa ditambah lagi kapan saja.
-2. Atur urutan dengan panah naik/turun di tiap baris; hapus yang tidak perlu.
+2. Atur urutan dengan menyeret pegangan di kiri baris, atau dengan panah naik/turun; hapus yang tidak perlu.
 3. Klik **Gabung n PDF**. Hasil diunduh sebagai `gabungan-<stempel waktu>.pdf`.
 
 Tombol aktif bila ada minimal dua PDF valid dan semuanya sudah selesai diperiksa.
@@ -21,7 +21,7 @@ Tombol aktif bila ada minimal dua PDF valid dan semuanya sudah selesai diperiksa
 | `index.tsx` | `ToolDefinition`; skeleton memakai `ConverterSkeleton`. |
 | `MergePdfTool.tsx` | Komponen utama: daftar berurutan, pemeriksaan PDF, ringkasan, unduhan. |
 | `Preview.tsx`, `merge-pdf.css` | SVG mini untuk home; gaya thumbnail baris. |
-| `lib/order.ts` | `moveItem` untuk memindah baris (+ test). |
+| `lib/order.ts` | `moveItem` untuk memindah baris, `dropIndex` untuk posisi tujuan saat diseret (+ test). |
 
 Penggabungan sendiri ada di `src/lib/pdf-edit.ts` (`mergePdfs`, dipakai bersama Pisah PDF; ada test). `pdf-lib` hanya diimpor lewat tool, jadi masuk chunk tool.
 
@@ -29,6 +29,7 @@ Penggabungan sendiri ada di `src/lib/pdf-edit.ts` (`mergePdfs`, dipakai bersama 
 
 - **Pemeriksaan:** tiap PDF baru dimuat dengan pdf-lib (jumlah halaman; menolak PDF terenkripsi atau rusak per baris) lalu halaman 1 dirender pdf.js jadi thumbnail. Dilakukan satu per satu lewat antrean; baris yang dihapus sebelum gilirannya dilewati. Gagal membuat thumbnail tidak menggagalkan baris.
 - **Penggabungan:** file dibaca satu per satu (hemat memori); galat menyebut nama file bermasalah.
+- **Seret untuk mengurutkan:** pointer events di pegangan baris (bukan drag HTML5, agar jalan di layar sentuh dan tidak memicu overlay "lepaskan file"). Saat pointer melewati titik tengah baris lain, urutan langsung diubah (`dropIndex` + `moveItem`). Pegangan `aria-hidden`; keyboard dan pembaca layar memakai tombol panah. Nonaktif selama menggabung.
 - **Object URL** thumbnail dilepas saat baris dihapus, "Mulai ulang", atau tool ditutup.
 
 ## Batasan
@@ -39,6 +40,6 @@ Penggabungan sendiri ada di `src/lib/pdf-edit.ts` (`mergePdfs`, dipakai bersama 
 
 ## Ide pengembangan
 
-- Seret-dan-lepas untuk mengurutkan.
+- Gulir otomatis saat menyeret baris ke tepi daftar yang panjang.
 - Memilih sebagian halaman tiap file sebelum digabung.
 - Membawa bookmark dan memberi judul dokumen.

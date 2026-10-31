@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, Download, FileText, FileUp, LoaderCircle, RotateCcw, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { ArrowDown, ArrowUp, Download, FileText, FileUp, GripVertical, LoaderCircle, RotateCcw, X } from "lucide-react";
 import { Bone } from "../../components/Skeleton";
 import { ToolBar } from "../../components/tool/ToolBar";
 import { PanelSection } from "../../components/tool/controls";
@@ -9,7 +9,7 @@ import { downloadBlob, fileStamp, formatBytes } from "../../lib/files";
 import { loadPdf, mergePdfs, readFile } from "../../lib/pdf-edit";
 import { isPdf } from "../compress-pdf/lib/compress";
 import { openPdf, pageThumbnail } from "../pdf-to-image/lib/pdf";
-import { moveItem } from "./lib/order";
+import { dropIndex, moveItem } from "./lib/order";
 import "./merge-pdf.css";
 
 interface Item {
@@ -100,6 +100,31 @@ export default function MergePdfTool() {
     });
   }
 
+  // Seret untuk mengurutkan: pointer events (bukan drag HTML5) agar jalan juga di layar sentuh.
+  // Urutan diubah langsung saat pointer melewati tengah baris lain.
+  const listRef = useRef<HTMLOListElement>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+
+  function startDrag(event: PointerEvent<HTMLElement>, id: string) {
+    if (merging || event.button !== 0) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDraggingId(id);
+  }
+
+  function drag(event: PointerEvent<HTMLElement>, id: string) {
+    if (draggingId !== id || !listRef.current) return;
+    const centers = Array.from(listRef.current.children, (row) => {
+      const rect = row.getBoundingClientRect();
+      return rect.top + rect.height / 2;
+    });
+    // itemsRef = urutan yang sedang tampil, sama dengan urutan `centers`.
+    const current = itemsRef.current;
+    const from = current.findIndex((item) => item.id === id);
+    const to = dropIndex(centers, from, event.clientY);
+    if (from !== -1 && to !== from) setItems(moveItem(current, from, to));
+  }
+
   function reset() {
     urls.current.forEach((url) => URL.revokeObjectURL(url));
     urls.current.clear();
@@ -173,7 +198,7 @@ export default function MergePdfTool() {
           </PanelSection>
 
           <PanelSection title="Urutan">
-            <p className="field-note">PDF digabung dari atas ke bawah. Pakai panah di tiap baris untuk memindahkan.</p>
+            <p className="field-note">PDF digabung dari atas ke bawah. Seret pegangan di kiri baris, atau pakai tombol panah, untuk memindahkan.</p>
           </PanelSection>
 
           {usable.length > 0 && !inspecting && (
@@ -211,9 +236,23 @@ export default function MergePdfTool() {
                   {inspecting ? "Memeriksa PDF…" : usable.length < 2 ? "Tambah satu PDF lagi untuk menggabung" : `${totalPages.toLocaleString("id-ID")} halaman setelah digabung`}
                 </p>
               </header>
-              <ol className="convert-list">
+              <ol ref={listRef} className={`convert-list${draggingId ? " is-sorting" : ""}`}>
                 {items.map((item, index) => (
-                  <li key={item.id} className="convert-row merge-row">
+                  <li key={item.id} className={`convert-row merge-row${draggingId === item.id ? " is-dragging" : ""}`}>
+                    {/* Pegangan hanya untuk pointer; keyboard dan pembaca layar memakai tombol panah. */}
+                    <span
+                      className="merge-row__grip"
+                      aria-hidden="true"
+                      title="Seret untuk memindahkan"
+                      data-disabled={merging || undefined}
+                      onPointerDown={(event) => startDrag(event, item.id)}
+                      onPointerMove={(event) => drag(event, item.id)}
+                      onPointerUp={() => setDraggingId(null)}
+                      onPointerCancel={() => setDraggingId(null)}
+                      onLostPointerCapture={() => setDraggingId(null)}
+                    >
+                      <GripVertical size={16} strokeWidth={1.5} />
+                    </span>
                     <span className="convert-row__thumb convert-row__thumb--doc">
                       {item.thumb ? <img src={item.thumb} alt="" /> : item.error ? <FileText size={24} strokeWidth={1.5} aria-hidden="true" /> : <Bone w="100%" h="100%" r={0} />}
                     </span>

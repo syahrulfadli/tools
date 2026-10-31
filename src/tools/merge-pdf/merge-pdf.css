@@ -1,4 +1,71 @@
-/* Gabung PDF: daftar berurutan dengan thumbnail halaman pertama dan tombol pindah. */
+/* Gabung PDF: daftar berurutan dengan thumbnail halaman pertama, pegangan seret, dan tombol pindah. */
+
+.convert-row.merge-row {
+  grid-template-columns: 24px 56px minmax(0, 1fr) auto auto;
+  margin: 0 -8px;
+  padding-inline: 0 8px;
+  border-radius: var(--radius-card);
+}
+
+.merge-row__grip {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  color: var(--faint);
+  cursor: grab;
+  touch-action: none;
+  transition: color var(--dur) var(--ease);
+}
+
+.merge-row__grip:hover {
+  color: var(--text);
+}
+
+.merge-row__grip[data-disabled] {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.convert-list.is-sorting {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.convert-list.is-sorting .merge-row__grip {
+  cursor: grabbing;
+}
+
+.convert-row.merge-row.is-dragging {
+  background: var(--raised);
+}
+
+/* Garis pemisah tidak tampil di sekitar baris yang sedang diseret. */
+.convert-row.merge-row.is-dragging,
+.convert-row.merge-row.is-dragging + .convert-row {
+  border-top-color: transparent;
+}
+
+.convert-row.merge-row.is-dragging .merge-row__grip {
+  color: var(--text);
+}
+
+@media (max-width: 720px) {
+  .convert-row.merge-row {
+    grid-template-columns: 24px 48px minmax(0, 1fr) auto;
+  }
+
+  .merge-row__grip {
+    grid-row: span 2;
+  }
+
+  .merge-row .convert-row__size {
+    grid-column: 3;
+  }
+
+  .merge-row .convert-row__actions {
+    grid-column: 4;
+  }
+}
 
 .convert-row__thumb--doc {
   display: grid;

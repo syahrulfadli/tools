@@ -7,3 +7,11 @@ export function moveItem<T>(list: readonly T[], from: number, to: number): T[] {
   next.splice(target, 0, item);
   return next;
 }
+
+/**
+ * Indeks tujuan baris yang sedang diseret: jumlah baris lain yang titik tengahnya sudah dilewati
+ * pointer. `centers` = posisi tengah tiap baris (urutan tampil), `from` = indeks baris yang diseret.
+ */
+export function dropIndex(centers: readonly number[], from: number, y: number): number {
+  return centers.filter((center, index) => index !== from && center < y).length;
+}
