@@ -22,8 +22,8 @@ export function sanitizeSettings(raw: unknown): CollageSettings {
   const d = DEFAULT_SETTINGS;
   if (!raw || typeof raw !== "object") return d;
   const s = raw as Record<string, unknown>;
-  const background =
-    s.background === "transparent" || (typeof s.background === "string" && /^#[0-9a-f]{6}$/i.test(s.background)) ? s.background : d.background;
+  const isHex = (value: unknown): value is string => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
+  const background = s.background === "transparent" || isHex(s.background) ? s.background : d.background;
   return {
     rows: int(s.rows, MIN_GRID, MAX_GRID, d.rows),
     cols: int(s.cols, MIN_GRID, MAX_GRID, d.cols),
@@ -32,6 +32,8 @@ export function sanitizeSettings(raw: unknown): CollageSettings {
     gap: int(s.gap, 0, SPACING_LIMITS.gap, d.gap),
     padding: int(s.padding, 0, SPACING_LIMITS.padding, d.padding),
     radius: int(s.radius, 0, SPACING_LIMITS.radius, d.radius),
+    borderWidth: int(s.borderWidth, 0, SPACING_LIMITS.border, d.borderWidth),
+    borderColor: isHex(s.borderColor) ? s.borderColor : d.borderColor,
     background: background as string,
     longEdge: oneOf(s.longEdge, SIZE_PRESETS, d.longEdge as (typeof SIZE_PRESETS)[number]),
     format: oneOf(s.format, ["png", "jpeg"] as const, d.format),

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type DragE
 import { ImagePlus } from "lucide-react";
 import { panBy, placeImage, visibleArea, zoomTo, type Framing } from "../lib/crop";
 import type { Photo } from "../lib/images";
-import { cellRects, cornerRadius, outputSize, unitSize, type Rect } from "../lib/layout";
+import { borderSize, cellRects, cornerRadius, outputSize, unitSize, type Rect } from "../lib/layout";
 import type { CollageAction, CollageState } from "../lib/state";
 
 export const PHOTO_DRAG_TYPE = "application/x-collage-photo";
@@ -188,8 +188,9 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
             const place = photo
               ? placeImage(photo.width, photo.height, rect.width, rect.height, cell.framing, cell.framing.fit ?? settings.fit)
               : null;
-            // Bingkai = bagian sel yang tertutup foto; sudut membulat mengikuti bingkai ini.
+            // Bingkai = bagian sel yang tertutup foto; sudut membulat dan garis bingkai mengikuti bingkai ini.
             const frame = place ? visibleArea(rect.width, rect.height, place) : null;
+            const border = frame ? borderSize(settings.borderWidth, frame, unit) : 0;
             const classes = [
               "cell",
               photo ? "cell--filled" : "cell--empty",
@@ -257,6 +258,9 @@ export function CollageCanvas({ state, photoById, dispatch, onPickForCell, onDro
                         transform: `translate(${place.x - frame.x}px, ${place.y - frame.y}px)`,
                       }}
                     />
+                    {border > 0 && (
+                      <span className="cell__border" style={{ borderWidth: border, borderColor: settings.borderColor }} aria-hidden="true" />
+                    )}
                   </span>
                 ) : (
                   <span className="cell__add">

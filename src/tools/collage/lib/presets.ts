@@ -45,7 +45,14 @@ export const SPACING_LIMITS = {
   gap: 80,
   padding: 120,
   radius: 120,
+  border: 40,
 } as const;
+
+export const BORDER_COLORS = [
+  { value: "#ffffff", label: "Putih" },
+  { value: "#131416", label: "Hitam" },
+  { value: "#e7e6e1", label: "Batu" },
+] as const;
 
 export const BACKGROUNDS = [
   { value: "#ffffff", label: "Putih" },

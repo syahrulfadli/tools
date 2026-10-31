@@ -38,6 +38,8 @@ describe("sanitizeSettings", () => {
       longEdge: 4096,
       format: "gif",
       fit: "contain",
+      borderWidth: 999, // di luar batas
+      borderColor: "transparent", // bingkai harus berwarna
       extra: "diabaikan",
     });
     expect(result).toEqual({
@@ -49,6 +51,12 @@ describe("sanitizeSettings", () => {
       longEdge: 4096,
       fit: "contain",
     });
+  });
+
+  it("setelan lama tanpa kolom bingkai tetap dipakai, bingkai kembali ke bawaan", () => {
+    const result = sanitizeSettings({ rows: 3, cols: 1 });
+    expect(result).toMatchObject({ rows: 3, cols: 1, borderWidth: 0, borderColor: "#ffffff" });
+    expect(sanitizeSettings({ borderWidth: 8, borderColor: "#c0ffee" })).toMatchObject({ borderWidth: 8, borderColor: "#c0ffee" });
   });
 
   it("menerima latar transparan dan warna heksadesimal", () => {

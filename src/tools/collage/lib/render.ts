@@ -1,6 +1,6 @@
 import { fileStamp } from "../../../lib/files";
 import { placeImage, visibleArea, type Framing } from "./crop";
-import { cellRects, cornerRadius, outputSize, snapRect, unitSize, type CollageSettings } from "./layout";
+import { borderSize, cellRects, cornerRadius, outputSize, snapRect, unitSize, type CollageSettings } from "./layout";
 
 export interface RenderCell {
   image: CanvasImageSource & { naturalWidth: number; naturalHeight: number };
@@ -44,10 +44,19 @@ export async function renderCollage(
     const area = visibleArea(rect.width, rect.height, place);
     const clip = { x: rect.x + area.x, y: rect.y + area.y, width: area.width, height: area.height };
 
+    const border = borderSize(settings.borderWidth, clip, unit);
+
     ctx.save();
     roundedRectPath(ctx, clip.x, clip.y, clip.width, clip.height, cornerRadius(settings.radius, clip, unit));
     ctx.clip();
     ctx.drawImage(cell.image, rect.x + place.x, rect.y + place.y, place.width, place.height);
+    if (border > 0) {
+      // Garis 2× tebal di jalur klip: separuh luarnya terpotong, sisanya bingkai di sisi dalam,
+      // sama dengan `border` CSS di pratinjau (sudut dalam = radius − tebal).
+      ctx.lineWidth = border * 2;
+      ctx.strokeStyle = settings.borderColor;
+      ctx.stroke();
+    }
     ctx.restore();
   });
 

@@ -5,6 +5,7 @@ import { DEFAULT_SETTINGS, outputSize, type CollageSettings } from "../lib/layou
 import { isDefaultSettings } from "../lib/persist";
 import {
   BACKGROUNDS,
+  BORDER_COLORS,
   GRID_PRESETS,
   MAX_GRID,
   MAX_RATIO_PART,
@@ -104,6 +105,24 @@ export function SettingsPanel({ settings, dispatch }: Props) {
         <Slider label="Jarak antar foto" value={settings.gap} max={SPACING_LIMITS.gap} onChange={(gap) => set({ gap })} />
         <Slider label="Tepi luar" value={settings.padding} max={SPACING_LIMITS.padding} onChange={(padding) => set({ padding })} />
         <Slider label="Sudut membulat" value={settings.radius} max={SPACING_LIMITS.radius} onChange={(radius) => set({ radius })} />
+      </PanelSection>
+
+      <PanelSection title="Bingkai foto">
+        <Slider
+          label="Tebal bingkai"
+          value={settings.borderWidth}
+          max={SPACING_LIMITS.border}
+          display={settings.borderWidth === 0 ? "Tanpa" : undefined}
+          onChange={(borderWidth) => set({ borderWidth })}
+        />
+        {settings.borderWidth > 0 && (
+          <ColorSwatches
+            label="Warna bingkai"
+            options={BORDER_COLORS}
+            value={settings.borderColor}
+            onChange={(borderColor) => set({ borderColor })}
+          />
+        )}
       </PanelSection>
 
       <PanelSection title="Latar">

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cellRects, outputSize, snapRect } from "./layout";
+import { borderSize, cellRects, outputSize, snapRect } from "./layout";
 import { panBy, placeImage, visibleArea } from "./crop";
 
 describe("outputSize", () => {
@@ -39,6 +39,15 @@ describe("cellRects", () => {
     const rects = cellRects(1000, 999, { rows: 3, cols: 3, gap: 0, padding: 0 }).map(snapRect);
     expect(rects[0].x + rects[0].width).toBe(rects[1].x);
     expect(rects[0].y + rects[0].height).toBe(rects[3].y);
+  });
+});
+
+describe("borderSize", () => {
+  it("mengikuti unit kolase dan tidak melewati setengah sisi terpendek", () => {
+    const rect = { x: 0, y: 0, width: 300, height: 40 };
+    expect(borderSize(10, rect, 2)).toBe(20);
+    expect(borderSize(40, rect, 2)).toBe(20);
+    expect(borderSize(0, rect, 2)).toBe(0);
   });
 });
 

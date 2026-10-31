@@ -14,6 +14,10 @@ export interface CollageSettings {
   gap: number;
   padding: number;
   radius: number;
+  /** Tebal bingkai di tepi dalam tiap foto, unit yang sama dengan jarak; 0 = tanpa bingkai. */
+  borderWidth: number;
+  /** Warna bingkai, heksadesimal `#rrggbb`. */
+  borderColor: string;
   /** Warna CSS heksadesimal, atau "transparent" (hanya bermakna untuk PNG). */
   background: string;
   /** Sisi terpanjang hasil ekspor, piksel. */
@@ -38,6 +42,8 @@ export const DEFAULT_SETTINGS: CollageSettings = {
   gap: 12,
   padding: 0,
   radius: 0,
+  borderWidth: 0,
+  borderColor: "#ffffff",
   background: "#ffffff",
   longEdge: 2048,
   format: "png",
@@ -93,6 +99,11 @@ export function snapRect({ x, y, width, height }: Rect): Rect {
 /** Radius sudut dalam piksel, dibatasi setengah sisi terpendek sel. */
 export function cornerRadius(radius: number, rect: Rect, unit: number) {
   return Math.min(radius * unit, rect.width / 2, rect.height / 2);
+}
+
+/** Tebal bingkai dalam piksel, dibatasi setengah sisi terpendek kotak (lebih dari itu bingkai menutup foto). */
+export function borderSize(borderWidth: number, rect: Rect, unit: number) {
+  return Math.min(borderWidth * unit, rect.width / 2, rect.height / 2);
 }
 
 export function ratioLabel(w: number, h: number) {

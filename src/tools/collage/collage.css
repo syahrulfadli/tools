@@ -176,6 +176,15 @@
   overflow: hidden;
 }
 
+/* Elemen sendiri setelah img: border milik .cell__frame akan tertutup foto. */
+.cell__border {
+  position: absolute;
+  inset: 0;
+  border-style: solid;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
 .cell img {
   position: absolute;
   top: 0;
