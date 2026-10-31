@@ -31,7 +31,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`/`Toggle`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. Untuk tool satu PDF: `usePdfDocument`/`useSinglePdfInput`/`usePdfThumbnails`/`usePageImage` dan `PdfDocumentCard`/`PdfWorkspaceState`. |
 | `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob), `pdf-edit.ts` (pdf-lib: buka, gabung, pisah, susun ulang, ukuran halaman), `pdf-geometry.ts` (posisi di halaman terlihat → ruang PDF, termasuk halaman diputar), `theme.ts` (tema terang/gelap/sistem), `pwa.ts` (daftar SW, dialog pasang), `storage.ts` (localStorage aman untuk preferensi). |
 | `src/styles/tool.css` | Kerangka & kontrol halaman tool (bar, panel, area kerja, responsif). |
-| `src/pages/` | Home (hero + pencarian + filter kategori + daftar per kategori) dan 404. |
+| `src/pages/` | Home (hero + pencarian + filter kategori + daftar per kategori, grid atau daftar) dan 404. |
 | `docs/` | Dokumentasi lintas tool. |
 
 ## Perintah

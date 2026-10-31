@@ -47,7 +47,7 @@ State React hilang saat tool unmount (user kembali ke home). Tool yang harus ter
 
 ## Kategori
 
-`src/tools/categories.ts` berisi kategori (`id`, `name`, `description`). `ToolDefinition.category` wajib salah satu `id` itu (dicek TypeScript). Home menampilkan filter kategori (tersimpan di `?kategori=`) dan mengelompokkan hasil per kategori dengan `groupByCategory()`. Nama kategori ikut dicari.
+`src/tools/categories.ts` berisi kategori (`id`, `name`, `description`). `ToolDefinition.category` wajib salah satu `id` itu (dicek TypeScript). Home menampilkan filter kategori (tersimpan di `?kategori=`) dan mengelompokkan hasil per kategori dengan `groupByCategory()`. Nama kategori ikut dicari. Pilihan tampilan Grid/Daftar disimpan di localStorage (`home:tampilan`, hanya preferensi, bawaan grid), tidak di URL.
 
 ## Pencarian
 

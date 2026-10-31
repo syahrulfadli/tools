@@ -110,8 +110,48 @@
   padding-bottom: 8px;
 }
 
-.tools__bar > p {
+.tools__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.tools__meta > p {
   color: var(--muted);
+}
+
+.view-switch {
+  display: flex;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.view-switch button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--muted);
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.view-switch button:hover {
+  color: var(--text);
+}
+
+.view-switch button.is-active {
+  border-color: var(--border);
+  background: var(--active);
+  color: var(--text);
 }
 
 .tool-group {
@@ -209,6 +249,28 @@
 
 .tool-row:hover .tool-row__go svg {
   transform: translateX(3px);
+}
+
+/* Grid: kartu bertumpuk (preview di atas), tanpa "Buka" karena seluruh kartu bisa diklik. */
+.tools__list--grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.tools__list--grid .tool-row {
+  height: 100%;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  gap: 14px;
+  padding: 12px 12px 16px;
+}
+
+.tools__list--grid .tool-row__body {
+  padding: 0 4px;
+}
+
+.tools__list--grid .tool-row__go {
+  display: none;
 }
 
 .tools__empty {

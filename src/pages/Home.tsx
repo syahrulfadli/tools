@@ -1,11 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { ArrowRight, Search, X } from "lucide-react";
+import { ArrowRight, LayoutGrid, List, Search, X, type LucideIcon } from "lucide-react";
 import { AppFrame } from "../components/AppFrame";
+import { readJson, writeJson } from "../lib/storage";
 import { categories, findCategory } from "../tools/categories";
 import { groupByCategory, preloadTool, searchTools, toolPath, tools } from "../tools/registry";
 import type { ToolDefinition } from "../tools/types";
 import "./home.css";
+
+type ToolView = "grid" | "list";
+
+/** Preferensi tampilan daftar tool di browser ini; bawaannya grid. */
+const VIEW_KEY = "home:tampilan";
+
+const VIEW_OPTIONS: { value: ToolView; label: string; Icon: LucideIcon }[] = [
+  { value: "grid", label: "Grid", Icon: LayoutGrid },
+  { value: "list", label: "Daftar", Icon: List },
+];
+
+function readView(): ToolView {
+  return readJson(VIEW_KEY) === "list" ? "list" : "grid";
+}
 
 export function Home() {
   const [params, setParams] = useSearchParams();
@@ -18,6 +33,12 @@ export function Home() {
   const results = categoryId ? matches.filter((tool) => tool.category === categoryId) : matches;
   const groups = groupByCategory(results);
   const activeCategory = findCategory(categoryId);
+  const [view, setView] = useState(readView);
+
+  function changeView(next: ToolView) {
+    setView(next);
+    writeJson(VIEW_KEY, next);
+  }
 
   // Simpan kata kunci dan kategori di URL (?q=, ?kategori=) agar bisa dibagikan
   // dan bertahan saat kembali dari tool.
@@ -115,11 +136,14 @@ export function Home() {
                 />
               ))}
             </div>
-            <p className="num" aria-live="polite">
-              {trimmed
-                ? `${results.length} tool cocok dengan “${trimmed}”`
-                : `${results.length} dari ${tools.length} tool`}
-            </p>
+            <div className="tools__meta">
+              <p className="num" aria-live="polite">
+                {trimmed
+                  ? `${results.length} tool cocok dengan “${trimmed}”`
+                  : `${results.length} dari ${tools.length} tool`}
+              </p>
+              <ViewSwitch value={view} onChange={changeView} />
+            </div>
           </div>
 
           {groups.length > 0 ? (
@@ -129,9 +153,9 @@ export function Home() {
                   <h2 id={`group-${category.id}`}>{category.name}</h2>
                   <p>{category.description}</p>
                 </header>
-                <ul className="tools__list">
+                <ul className={`tools__list tools__list--${view}`}>
                   {list.map((tool) => (
-                    <ToolRow key={tool.slug} tool={tool} />
+                    <ToolItem key={tool.slug} tool={tool} />
                   ))}
                 </ul>
               </section>
@@ -170,7 +194,29 @@ function Chip({ label, count, active, onClick }: { label: string; count: number;
   );
 }
 
-function ToolRow({ tool }: { tool: ToolDefinition }) {
+function ViewSwitch({ value, onChange }: { value: ToolView; onChange: (view: ToolView) => void }) {
+  return (
+    <div className="view-switch" role="radiogroup" aria-label="Tampilan">
+      {VIEW_OPTIONS.map(({ value: option, label, Icon }) => (
+        <button
+          key={option}
+          type="button"
+          role="radio"
+          aria-checked={option === value}
+          aria-label={label}
+          title={label}
+          className={option === value ? "is-active" : undefined}
+          onClick={() => onChange(option)}
+        >
+          <Icon size={16} strokeWidth={1.5} aria-hidden="true" />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Satu tool: baris di tampilan daftar, kartu di tampilan grid (diatur `.tools__list--*`). */
+function ToolItem({ tool }: { tool: ToolDefinition }) {
   return (
     <li>
       <Link

@@ -25,7 +25,7 @@ Pilihan tema ada di bar atas home: segmented kecil tiga ikon (Terang, Gelap, Iku
 
 | Layar | Pola |
 | --- | --- |
-| Home | `AppFrame` (bar 48px + sheet). Hero: `h1` besar (atas permintaan pemilik; layar app biasanya 18–32px), satu kalimat deskripsi, lalu kotak cari 56px selebar kolom 1120px. Di bawahnya daftar tool per kategori sebagai baris (preview SVG, nama, deskripsi, "Buka"). |
+| Home | `AppFrame` (bar 48px + sheet). Hero: `h1` besar (atas permintaan pemilik; layar app biasanya 18–32px), satu kalimat deskripsi, lalu kotak cari 56px selebar kolom 1120px. Di bawahnya daftar tool per kategori, bawaannya grid kartu (`auto-fill, minmax(240px, 1fr)`: preview SVG di atas, nama, deskripsi). Segmented ikon kecil di kanan bar filter (gaya sama dengan pilihan tema) mengganti ke tampilan daftar: baris (preview SVG, nama, deskripsi, "Buka"). |
 | Home: kategori | Baris chip filter (Semua + tiap kategori, dengan jumlah) di atas daftar; chip aktif terisi hitam. Tiap kategori punya judul 18px + satu kalimat deskripsi. |
 | Tool converter | `ToolBar` + panel pengaturan 300px + area kerja (`.workspace`). Keadaan kosong = tombol besar bergaris putus-putus di area kerja. Di tablet/ponsel area kerja tampil di atas panel. |
 | Tool jam (timer) | `ToolBar` + panel 300px + area kerja dengan tab garis bawah (2px tinta di atas garis 1px). Angka besar di tengah, satu-satunya pengecualian batas 48px untuk layar app karena dibaca dari jauh; di dalam cincin ukurannya mengikuti lebar cincin (`cqi`). Tombol 44px berbentuk pil. |
