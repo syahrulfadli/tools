@@ -40,19 +40,60 @@ export function makeQr(text: string, ecc: Ecc): QrMatrix {
   return { size, version: (size - 17) / 4, modules };
 }
 
-/** Path SVG modul gelap; modul berurutan di satu baris digabung jadi satu persegi panjang. */
-export function qrPath(modules: readonly boolean[][], margin: number) {
+/** Path SVG modul gelap; modul berurutan di satu baris digabung jadi satu persegi panjang. Modul di `hole` dilewati. */
+export function qrPath(modules: readonly boolean[][], margin: number, hole?: LogoBox | null) {
   const parts: string[] = [];
+  const inHole = (x: number, y: number) => !!hole && x + margin >= hole.x && x + margin < hole.x + hole.size && y + margin >= hole.y && y + margin < hole.y + hole.size;
   modules.forEach((row, y) => {
     for (let x = 0; x < row.length; x++) {
-      if (!row[x]) continue;
+      if (!row[x] || inHole(x, y)) continue;
       let end = x;
-      while (end + 1 < row.length && row[end + 1]) end++;
+      while (end + 1 < row.length && row[end + 1] && !inHole(end + 1, y)) end++;
       parts.push(`M${x + margin} ${y + margin}h${end - x + 1}v1h-${end - x + 1}z`);
       x = end;
     }
   });
   return parts.join("");
+}
+
+/** Kotak logo di tengah QR, dalam satuan modul (sudah termasuk tepi kosong). */
+export interface LogoBox {
+  x: number;
+  y: number;
+  size: number;
+}
+
+/**
+ * Batas lebar logo (relatif lebar QR) per tingkat ketahanan. Uji pindai dengan jsQR (logo hitam
+ * pekat, 4 ukuran piksel per modul, isi pendek sampai 300 byte) masih terbaca sampai 0,22 (Sedang),
+ * 0,28 (Tinggi), dan 0,28 (Maks.); batas di sini disisakan cadangan untuk kamera ponsel dan cetakan.
+ * Rendah tidak punya cadangan untuk menutup modul, jadi logo tidak diizinkan.
+ */
+export const LOGO_MAX_SCALE: Record<Ecc, number> = { L: 0, M: 0.16, Q: 0.22, H: 0.25 };
+
+/**
+ * Kotak logo berpusat, lebarnya `scale` × lebar QR, dibulatkan ke modul utuh dengan paritas
+ * yang sama dengan jumlah modul agar tepat di tengah grid. Modul di dalam kotak dikosongkan.
+ */
+export function logoBox(matrix: QrMatrix, margin: number, scale: number): LogoBox | null {
+  if (scale <= 0) return null;
+  let size = Math.max(3, Math.ceil(matrix.size * scale));
+  if (size % 2 !== matrix.size % 2) size++;
+  const offset = margin + (matrix.size - size) / 2;
+  return { x: offset, y: offset, size };
+}
+
+/** Bagian modul QR yang tertutup logo (0–1). */
+export function logoCoverage(matrix: QrMatrix, box: LogoBox | null) {
+  return box ? (box.size * box.size) / (matrix.size * matrix.size) : 0;
+}
+
+/** Logo digambar di dalam kotak dengan jarak 1 modul dari tepinya, rasio dipertahankan. */
+export function logoImageRect(box: LogoBox, aspect: number) {
+  const inner = box.size - 2;
+  const width = aspect >= 1 ? inner : inner * aspect;
+  const height = aspect >= 1 ? inner / aspect : inner;
+  return { x: box.x + (box.size - width) / 2, y: box.y + (box.size - height) / 2, width, height };
 }
 
 export interface QrStyle {
@@ -63,11 +104,21 @@ export interface QrStyle {
   background: string;
 }
 
+export interface QrLogo {
+  /** Data URL PNG (disematkan di file SVG, jadi bukan object URL). */
+  href: string;
+  /** Lebar/tinggi gambar logo. */
+  aspect: number;
+  box: LogoBox;
+}
+
 /** File SVG mandiri, berskala bebas. */
-export function qrSvg(matrix: QrMatrix, style: QrStyle) {
+export function qrSvg(matrix: QrMatrix, style: QrStyle, logo?: QrLogo | null) {
   const side = matrix.size + style.margin * 2;
   const bg = style.background === "transparent" ? "" : `<rect width="${side}" height="${side}" fill="${style.background}"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${side} ${side}" shape-rendering="crispEdges">${bg}<path fill="${style.foreground}" d="${qrPath(matrix.modules, style.margin)}"/></svg>`;
+  const rect = logo ? logoImageRect(logo.box, logo.aspect) : null;
+  const image = logo && rect ? `<image href="${logo.href}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" shape-rendering="auto"/>` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${side} ${side}" shape-rendering="crispEdges">${bg}<path fill="${style.foreground}" d="${qrPath(matrix.modules, style.margin, logo?.box)}"/>${image}</svg>`;
 }
 
 /** Piksel per modul agar gambar mendekati `target` px tanpa modul berukuran pecahan. */

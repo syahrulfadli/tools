@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_BYTES, byteLength, colorWarning, makeQr, normalizeLink, pixelsPerModule, qrFilename, qrPath, qrSvg } from "./qr";
+import { LOGO_MAX_SCALE, MAX_BYTES, byteLength, colorWarning, logoBox, logoCoverage, logoImageRect, makeQr, normalizeLink, pixelsPerModule, qrFilename, qrPath, qrSvg } from "./qr";
 
 describe("makeQr", () => {
   it("membuat matriks versi terkecil yang muat", () => {
@@ -86,5 +86,39 @@ describe("colorWarning", () => {
   it("memperingatkan kontras rendah dan warna terbalik", () => {
     expect(colorWarning("#bbbbbb", "#ffffff")).toMatch(/mirip/);
     expect(colorWarning("#ffffff", "#000000")).toMatch(/terbalik/);
+  });
+});
+
+describe("logo", () => {
+  it("kotak logo berpusat di grid dengan paritas yang sama", () => {
+    const qr = makeQr("https://contoh.com", "H"); // 29 modul
+    const box = logoBox(qr, 4, 0.2)!;
+    expect(box.size % 2).toBe(qr.size % 2);
+    expect(box.x).toBe(4 + (qr.size - box.size) / 2);
+    expect(box.x).toBe(box.y);
+    expect(logoBox(qr, 4, 0)).toBeNull();
+    expect(logoCoverage(qr, box)).toBeCloseTo((box.size / qr.size) ** 2);
+  });
+
+  it("modul di dalam kotak logo dikosongkan", () => {
+    const modules = [[true, true, true]];
+    expect(qrPath(modules, 0, { x: 1, y: 0, size: 1 })).toBe("M0 0h1v1h-1zM2 0h1v1h-1z");
+  });
+
+  it("logo berjarak 1 modul dan mempertahankan rasio", () => {
+    expect(logoImageRect({ x: 10, y: 10, size: 9 }, 2)).toEqual({ x: 11, y: 12.75, width: 7, height: 3.5 });
+    expect(logoImageRect({ x: 10, y: 10, size: 9 }, 0.5)).toEqual({ x: 12.75, y: 11, width: 3.5, height: 7 });
+  });
+
+  it("SVG menyematkan gambar logo", () => {
+    const qr = makeQr("x", "H");
+    const svg = qrSvg(qr, { margin: 4, foreground: "#000000", background: "#ffffff" }, { href: "data:image/png;base64,AAAA", aspect: 1, box: logoBox(qr, 4, 0.25)! });
+    expect(svg).toContain('<image href="data:image/png;base64,AAAA"');
+  });
+
+  it("tingkat Rendah tidak mengizinkan logo, batas naik bersama ketahanan", () => {
+    expect(LOGO_MAX_SCALE.L).toBe(0);
+    expect(LOGO_MAX_SCALE.M).toBeLessThan(LOGO_MAX_SCALE.Q);
+    expect(LOGO_MAX_SCALE.Q).toBeLessThan(LOGO_MAX_SCALE.H);
   });
 });

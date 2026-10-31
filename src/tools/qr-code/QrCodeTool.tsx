@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { Copy, Download, FileCode2, QrCode } from "lucide-react";
+import { Copy, Download, FileCode2, ImagePlus, QrCode } from "lucide-react";
 import { ToolBar } from "../../components/tool/ToolBar";
-import { ColorSwatches, PanelSection, Segmented, Toggle } from "../../components/tool/controls";
+import { ColorSwatches, PanelSection, Segmented, Slider, Toggle } from "../../components/tool/controls";
+import { useFilePicker } from "../../components/tool/fileInput";
 import { canvasToBlob, releaseCanvas } from "../../lib/canvas";
 import { downloadBlob, formatBytes } from "../../lib/files";
+import { loadLogo, type Logo } from "./lib/logo";
 import {
+  LOGO_MAX_SCALE,
   MAX_BYTES,
   QUIET_ZONE,
   byteLength,
   colorWarning,
+  logoBox,
+  logoCoverage,
+  logoImageRect,
   makeQr,
   normalizeLink,
   pixelsPerModule,
@@ -16,6 +22,7 @@ import {
   qrPath,
   qrSvg,
   type Ecc,
+  type LogoBox,
   type QrMatrix,
   type QrStyle,
 } from "./lib/qr";
@@ -60,7 +67,7 @@ const BACKGROUNDS = [
   { value: "transparent", label: "Transparan" },
 ] as const;
 
-async function toPng(matrix: QrMatrix, style: QrStyle, target: number) {
+async function toPng(matrix: QrMatrix, style: QrStyle, target: number, logo: { box: LogoBox; logo: Logo } | null) {
   const cell = pixelsPerModule(matrix, style.margin, target);
   const side = (matrix.size + style.margin * 2) * cell;
   const canvas = document.createElement("canvas");
@@ -73,7 +80,16 @@ async function toPng(matrix: QrMatrix, style: QrStyle, target: number) {
     ctx.fillRect(0, 0, side, side);
   }
   ctx.fillStyle = style.foreground;
-  matrix.modules.forEach((row, y) => row.forEach((dark, x) => dark && ctx.fillRect((x + style.margin) * cell, (y + style.margin) * cell, cell, cell)));
+  const hole = logo?.box;
+  const inHole = (x: number, y: number) => !!hole && x >= hole.x && x < hole.x + hole.size && y >= hole.y && y < hole.y + hole.size;
+  matrix.modules.forEach((row, y) =>
+    row.forEach((dark, x) => dark && !inHole(x + style.margin, y + style.margin) && ctx.fillRect((x + style.margin) * cell, (y + style.margin) * cell, cell, cell)),
+  );
+  if (logo) {
+    const rect = logoImageRect(logo.box, logo.logo.aspect);
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(logo.logo.image, rect.x * cell, rect.y * cell, rect.width * cell, rect.height * cell);
+  }
   try {
     return { blob: await canvasToBlob(canvas, "image/png"), side };
   } finally {
@@ -91,6 +107,21 @@ export default function QrCodeTool() {
   const [quiet, setQuiet] = useState(true);
   const [size, setSize] = useState(1024);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [logo, setLogo] = useState<Logo | null>(null);
+  const [logoScale, setLogoScale] = useState(0.2);
+  const [logoError, setLogoError] = useState<string | null>(null);
+
+  const logoPicker = useFilePicker("image/png,image/jpeg,image/webp,image/svg+xml", false, async (files) => {
+    try {
+      setLogo(await loadLogo(files[0]));
+      setLogoError(null);
+      // Logo menutup modul di tengah: naikkan ketahanan ke Maks. bila masih di bawahnya.
+      setEcc("H");
+      setLogoScale((current) => Math.min(current, LOGO_MAX_SCALE.H));
+    } catch (error) {
+      setLogoError((error as Error).message);
+    }
+  });
 
   const linkResult = normalizeLink(link);
   const content = kind === "link" ? (linkResult.ok ? linkResult.url : "") : text;
@@ -112,15 +143,22 @@ export default function QrCodeTool() {
   const side = matrix ? matrix.size + style.margin * 2 : 0;
   const pngSide = matrix ? pixelsPerModule(matrix, style.margin, size) * side : 0;
   const filename = qrFilename(content);
+  // Lebar logo dijepit ke batas tingkat ketahanan; di Rendah logo tidak dipakai.
+  const maxScale = LOGO_MAX_SCALE[ecc];
+  const scale = Math.min(logoScale, maxScale);
+  const box = matrix && logo && maxScale > 0 ? logoBox(matrix, style.margin, scale) : null;
+  const placed = box && logo ? { box, logo } : null;
+  const svgLogo = placed ? { href: placed.logo.href, aspect: placed.logo.aspect, box: placed.box } : null;
+  const logoRect = placed ? logoImageRect(placed.box, placed.logo.aspect) : null;
 
   useEffect(() => {
     setStatus({ kind: "idle" });
-  }, [content, ecc, foreground, background, quiet, size]);
+  }, [content, ecc, foreground, background, quiet, size, logo, scale]);
 
   async function savePng() {
     if (!matrix) return;
     try {
-      const { blob } = await toPng(matrix, style, size);
+      const { blob } = await toPng(matrix, style, size, placed);
       downloadBlob(blob, `${filename}.png`);
       setStatus({ kind: "saved", filename: `${filename}.png`, bytes: blob.size });
     } catch (error) {
@@ -130,7 +168,7 @@ export default function QrCodeTool() {
 
   function saveSvg() {
     if (!matrix) return;
-    const blob = new Blob([qrSvg(matrix, style)], { type: "image/svg+xml" });
+    const blob = new Blob([qrSvg(matrix, style, svgLogo)], { type: "image/svg+xml" });
     downloadBlob(blob, `${filename}.svg`);
     setStatus({ kind: "saved", filename: `${filename}.svg`, bytes: blob.size });
   }
@@ -139,7 +177,7 @@ export default function QrCodeTool() {
     if (!matrix) return;
     try {
       // ClipboardItem menerima promise, sehingga izin menulis tetap terikat ke klik user (Safari).
-      await navigator.clipboard.write([new ClipboardItem({ "image/png": toPng(matrix, style, size).then((png) => png.blob) })]);
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": toPng(matrix, style, size, placed).then((png) => png.blob) })]);
       setStatus({ kind: "copied" });
     } catch {
       setStatus({ kind: "error", message: "Browser ini belum bisa menyalin gambar. Unduh PNG saja." });
@@ -230,6 +268,59 @@ export default function QrCodeTool() {
             <p className="field-note">{LEVEL_NOTES[ecc]}</p>
           </PanelSection>
 
+          <PanelSection title="Logo" aside={logo ? logo.name : undefined}>
+            {logo ? (
+              <>
+                <div className="qr-logo">
+                  <span className="qr-logo__thumb">
+                    <img src={logo.href} alt="" />
+                  </span>
+                  <div className="button-row button-row--flush">
+                    <button type="button" className="btn" onClick={logoPicker.open}>
+                      Ganti
+                    </button>
+                    <button type="button" className="btn btn--ghost" onClick={() => setLogo(null)}>
+                      Hapus logo
+                    </button>
+                  </div>
+                </div>
+                {maxScale > 0 ? (
+                  <>
+                    <Slider
+                      label="Ukuran logo"
+                      min={10}
+                      max={Math.round(maxScale * 100)}
+                      value={Math.round(scale * 100)}
+                      display={`${Math.round(scale * 100)}% lebar QR`}
+                      onChange={(value) => setLogoScale(value / 100)}
+                    />
+                    <p className="field-note">
+                      {matrix && box ? `Menutup ${Math.round(logoCoverage(matrix, box) * 100)}% kotak QR. ` : ""}
+                      Batas ukuran mengikuti tingkat ketahanan; makin tinggi ketahanan, logo boleh makin besar.
+                    </p>
+                  </>
+                ) : (
+                  <p className="field-note field-note--error" role="alert">
+                    Ketahanan Rendah tidak cukup untuk menampung logo, jadi logo tidak dipasang. Pilih Sedang atau lebih tinggi.
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <button type="button" className="btn" onClick={logoPicker.open}>
+                  <ImagePlus size={14} strokeWidth={1.5} aria-hidden="true" />
+                  Tambah logo di tengah
+                </button>
+                <p className="field-note">PNG, JPEG, WebP, atau SVG. Logo berlatar transparan terlihat paling rapi. Ketahanan otomatis naik ke Maks.</p>
+              </>
+            )}
+            {logoError && (
+              <p className="field-note field-note--error" role="alert">
+                {logoError}
+              </p>
+            )}
+          </PanelSection>
+
           <PanelSection title="Warna">
             <div className="segmented-field">
               <span className="segmented-field__label">Kotak</span>
@@ -270,7 +361,8 @@ export default function QrCodeTool() {
                 <figure className={`qr-preview${background === "transparent" ? " qr-preview--transparent" : ""}`}>
                   <svg viewBox={`0 0 ${side} ${side}`} shapeRendering="crispEdges" role="img" aria-label={`QR code berisi ${content}`}>
                     {background !== "transparent" && <rect width={side} height={side} fill={background} />}
-                    <path fill={foreground} d={qrPath(matrix.modules, style.margin)} />
+                    <path fill={foreground} d={qrPath(matrix.modules, style.margin, placed?.box)} />
+                    {placed && logoRect && <image href={placed.logo.href} x={logoRect.x} y={logoRect.y} width={logoRect.width} height={logoRect.height} shapeRendering="auto" />}
                   </svg>
                 </figure>
                 <p className="qr-content" title={content}>
@@ -288,6 +380,8 @@ export default function QrCodeTool() {
           )}
         </main>
       </div>
+
+      {logoPicker.input}
     </div>
   );
 }
