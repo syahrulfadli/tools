@@ -28,7 +28,7 @@ Kumpulan tool kecil berbasis browser. React + TypeScript (frontend) dan Cloudfla
 | `src/tools/types.ts` | Kontrak `ToolDefinition`. |
 | `src/tools/<slug>/` | Satu tool: `index.ts(x)`, komponen, `lib/`, skeleton, preview, `docs/`. |
 | `src/components/` | Shell (`AppFrame` dengan `ThemeSwitch` + `InstallButton`, footer kredit + `NoahMark`), skeleton (`Bone`, `SkeletonPage`, `RouteProgress`), error boundary. |
-| `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`/`Toggle`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. Untuk tool satu PDF: `usePdfDocument`/`useSinglePdfInput`/`usePdfThumbnails`/`usePageImage` dan `PdfDocumentCard`/`PdfWorkspaceState`. |
+| `src/components/tool/` | Bahan halaman tool: `ToolBar`, `PanelSection`/`Slider`/`Segmented`/`ColorSwatches`/`Toggle`/`NumberInput`, `FileDropzone`/`FailureList`, `usePageFileDrop`/`usePasteFiles`/`useFilePicker`, `ConverterSkeleton`. Untuk tool satu PDF: `usePdfDocument`/`useSinglePdfInput`/`usePdfThumbnails`/`usePageImage` dan `PdfDocumentCard`/`PdfWorkspaceState`. |
 | `src/lib/` | Utilitas bersama: `files.ts` (unduh, ukuran, nama), `zip.ts` (ZIP tanpa dependensi), `canvas.ts` (batas kanvas, toBlob), `pdf-edit.ts` (pdf-lib: buka, gabung, pisah, susun ulang, ukuran halaman), `pdf-geometry.ts` (posisi di halaman terlihat → ruang PDF, termasuk halaman diputar), `theme.ts` (tema terang/gelap/sistem), `pwa.ts` (daftar SW, dialog pasang), `storage.ts` (localStorage aman untuk preferensi). |
 | `src/styles/tool.css` | Kerangka & kontrol halaman tool (bar, panel, area kerja, responsif). |
 | `src/pages/` | Home (hero + pencarian + filter kategori + daftar per kategori, grid atau daftar) dan 404. |
@@ -60,6 +60,8 @@ Service worker (PWA) hanya aktif di build produksi, jadi uji offline/pemasangan 
   - File Converter → Gambar ke PDF: [src/tools/image-to-pdf/docs/README.md](src/tools/image-to-pdf/docs/README.md)
   - File Converter → Word ke PDF: [src/tools/word-to-pdf/docs/README.md](src/tools/word-to-pdf/docs/README.md)
   - File Converter → PNG ke JPEG: [src/tools/png-to-jpg/docs/README.md](src/tools/png-to-jpg/docs/README.md)
+  - File Converter → SVG ke Gambar: [src/tools/svg-to-image/docs/README.md](src/tools/svg-to-image/docs/README.md)
+  - File Converter → Gambar ke SVG: [src/tools/image-to-svg/docs/README.md](src/tools/image-to-svg/docs/README.md)
   - File Converter → PDF ke Teks: [src/tools/pdf-to-text/docs/README.md](src/tools/pdf-to-text/docs/README.md)
   - File Converter → QR Code: [src/tools/qr-code/docs/README.md](src/tools/qr-code/docs/README.md)
   - Olah PDF → Gabung PDF: [src/tools/merge-pdf/docs/README.md](src/tools/merge-pdf/docs/README.md)

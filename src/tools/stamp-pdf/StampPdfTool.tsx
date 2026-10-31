@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Download, ImagePlus, LoaderCircle } from "lucide-react";
 import { ToolBar } from "../../components/tool/ToolBar";
-import { ColorSwatches, PanelSection, Segmented, Slider, Toggle } from "../../components/tool/controls";
+import { ColorSwatches, NumberInput, PanelSection, Segmented, Slider, Toggle } from "../../components/tool/controls";
 import { FailureList, FileDropzone } from "../../components/tool/FileDropzone";
 import { useFilePicker } from "../../components/tool/fileInput";
 import { PdfDocumentCard, PdfWorkspaceState } from "../../components/tool/PdfDocument";
@@ -393,31 +393,5 @@ export default function StampPdfTool() {
       {logoPicker.input}
       {input.overlay}
     </div>
-  );
-}
-
-/** Kolom angka kecil yang menjepit nilainya saat fokus lepas. */
-function NumberInput({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (value: number) => void }) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const commit = () => {
-    if (draft === null) return;
-    const parsed = Math.round(Number(draft));
-    if (draft.trim() !== "" && Number.isFinite(parsed)) onChange(Math.min(max, Math.max(min, parsed)));
-    setDraft(null);
-  };
-  return (
-    <label className="number-field number-field--wide stamp-number-input">
-      <span className="segmented-field__label">{label}</span>
-      <input
-        type="number"
-        inputMode="numeric"
-        min={min}
-        max={max}
-        value={draft ?? value}
-        onChange={(event) => setDraft(event.target.value)}
-        onBlur={commit}
-        onKeyDown={(event) => event.key === "Enter" && commit()}
-      />
-    </label>
   );
 }

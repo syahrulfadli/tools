@@ -18,11 +18,6 @@
   margin-top: 0;
 }
 
-.stamp-number-input {
-  display: grid;
-  gap: 6px;
-}
-
 .stamp-sheet {
   container-type: inline-size;
 }

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 /** Satu seksi panel: judul kecil, keterangan di kanan (angka/ringkasan), lalu isi. */
 export function PanelSection({ title, aside, children }: { title: string; aside?: ReactNode; children: ReactNode }) {
@@ -140,6 +140,32 @@ export function Toggle({
       </span>
       <input type="checkbox" role="switch" checked={checked} disabled={disabled} onChange={(event) => onChange(event.target.checked)} />
       <span className="toggle__track" aria-hidden="true" />
+    </label>
+  );
+}
+
+/** Kolom angka kecil yang menjepit nilainya ke [min, max] saat fokus lepas atau Enter. */
+export function NumberInput({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (value: number) => void }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const commit = () => {
+    if (draft === null) return;
+    const parsed = Math.round(Number(draft));
+    if (draft.trim() !== "" && Number.isFinite(parsed)) onChange(Math.min(max, Math.max(min, parsed)));
+    setDraft(null);
+  };
+  return (
+    <label className="number-field number-field--wide number-input">
+      <span className="segmented-field__label">{label}</span>
+      <input
+        type="number"
+        inputMode="numeric"
+        min={min}
+        max={max}
+        value={draft ?? value}
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={commit}
+        onKeyDown={(event) => event.key === "Enter" && commit()}
+      />
     </label>
   );
 }

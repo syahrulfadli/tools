@@ -55,7 +55,7 @@ Mulai dari bahan bersama, jangan menulis ulang:
 | Butuh | Pakai |
 | --- | --- |
 | Kerangka halaman | `<div className="tool" {...dropProps}>` + `ToolBar` + `<div className="tool-body tool-body--sidebar">` (panel 300 px + area kerja) |
-| Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches`, `Toggle` dari `components/tool/controls`; `.chip` (base.css) untuk preset/filter |
+| Panel & kontrol | `<aside className="panel">`, `PanelSection`, `Slider`, `Segmented`, `ColorSwatches`, `Toggle`, `NumberInput` dari `components/tool/controls`; `.chip` (base.css) untuk preset/filter |
 | Area kerja | `<main className="panel workspace">`, `.workspace__head`, `.workspace__empty` (tombol besar keadaan kosong) |
 | Input file | `useFilePicker`, `usePageFileDrop` (seret ke halaman + overlay; gambar di halaman otomatis tidak bisa diseret, seretan dari dalam halaman tidak memicu overlay), `usePasteFiles`, `FileDropzone`, `FailureList`; `.doc-card` (tool.css) untuk kartu satu dokumen yang terbuka |
 | Keluaran | `downloadBlob`, `formatBytes`, `baseName`, `uniqueNamer`, `fileStamp` (`lib/files`), `createZip` (`lib/zip`), `canvasToBlob`/`canvasLimitFactor`/`releaseCanvas` (`lib/canvas`) |
@@ -63,7 +63,7 @@ Mulai dari bahan bersama, jangan menulis ulang:
 | Menulis teks/gambar di halaman PDF | `visualSize`, `toUserSpace` (`lib/pdf-geometry`): hitung posisi di halaman seperti terlihat, lalu petakan ke ruang PDF (menangani `/Rotate` dan CropBox). Contoh: `src/tools/stamp-pdf/lib/apply.ts` |
 | Skeleton converter | `ConverterSkeleton` dengan judul dan nama seksi panel |
 
-Contoh lengkap pola converter: `src/tools/png-to-jpg/`. Contoh tool yang mencetak HTML ke PDF lewat dialog cetak (iframe pratinjau + `@page`): `src/tools/word-to-pdf/`. Contoh tool tanpa file dengan state yang bertahan antar halaman (store modul + `useSyncExternalStore`): `src/tools/timer/`.
+Contoh lengkap pola converter: `src/tools/png-to-jpg/`. Contoh tool yang mencetak HTML ke PDF lewat dialog cetak (iframe pratinjau + `@page`): `src/tools/word-to-pdf/`. Contoh pekerjaan berat di Web Worker dengan progres dan Batal: `src/tools/image-to-svg/`. Contoh tool tanpa file dengan state yang bertahan antar halaman (store modul + `useSyncExternalStore`): `src/tools/timer/`.
 
 - Komponen utama wajib `export default` (syarat `React.lazy`).
 - Render `<title>Nama Tool · Productivity Tools</title>` di dalam komponen (React 19 memindahkannya ke `<head>`).

@@ -563,6 +563,11 @@
   width: 100%;
 }
 
+.number-input {
+  display: grid;
+  gap: 6px;
+}
+
 /* Kartu satu dokumen yang terbuka di panel (PDF ke Gambar, Word ke PDF). */
 .doc-card {
   display: grid;

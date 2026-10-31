@@ -1,0 +1,12 @@
+/* SVG ke Gambar: baris daftar memakai .convert-row bersama (styles/tool.css). */
+
+.svg-quality,
+.svg-size {
+  margin-top: 14px;
+}
+
+/* Ikon dan logo jarang persegi penuh: tampilkan utuh di atas papan catur, jangan dipotong. */
+.svg-thumb img {
+  padding: 4px;
+  object-fit: contain;
+}

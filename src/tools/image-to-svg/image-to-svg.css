@@ -1,0 +1,62 @@
+/* Gambar ke SVG: asli dan hasil berdampingan di atas papan catur (isi file, bukan chrome). */
+
+.svg-tools {
+  align-items: center;
+}
+
+.svg-compare {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-height: 0;
+  padding: 20px;
+}
+
+.svg-compare figure {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+  margin: 0;
+}
+
+.svg-compare figcaption {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.svg-compare__frame {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--checker) 0 0 / 16px 16px;
+}
+
+/* Isi bingkai penuh, juga untuk gambar kecil: diperbesar, piksel asli tampak pecah sedangkan SVG tetap mulus. */
+.svg-compare__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity var(--dur) var(--ease);
+}
+
+/* Hasil lama tetap terlihat redup selama pengaturan baru dilacak. */
+.svg-compare__frame img.is-stale {
+  opacity: 0.4;
+}
+
+.svg-compare__frame .bone {
+  min-height: 216px;
+}
+
+@media (max-width: 720px) {
+  .svg-compare {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+}
