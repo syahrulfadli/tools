@@ -17,6 +17,7 @@ export function CollageSkeleton() {
           <span className="tool-bar__status" />
           <div className="tool-bar__actions">
             <Bone w={112} h={32} r={6} />
+            <Bone w={120} h={32} r={6} />
             <Bone w={116} h={32} r={6} />
           </div>
         </header>

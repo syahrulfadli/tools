@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { Download, LoaderCircle, RotateCcw } from "lucide-react";
+import { Copy, Download, LoaderCircle, RotateCcw } from "lucide-react";
 import { ToolBar } from "../../components/tool/ToolBar";
 import type { FileFailure } from "../../components/tool/FileDropzone";
 import { useFilePicker, usePageFileDrop, usePasteFiles } from "../../components/tool/fileInput";
@@ -16,7 +16,9 @@ import "./collage.css";
 type ExportStatus =
   | { kind: "idle" }
   | { kind: "rendering" }
+  | { kind: "copying" }
   | { kind: "done"; filename: string; width: number; height: number; bytes: number }
+  | { kind: "copied" }
   | { kind: "error"; message: string };
 
 export default function CollageTool() {
@@ -102,14 +104,17 @@ export default function CollageTool() {
     setStatus({ kind: "idle" });
   }
 
+  function renderCells() {
+    return state.cells.map((cell) => {
+      const photo = cell.photoId ? photoById.get(cell.photoId) : undefined;
+      return photo ? { image: photo.image, framing: cell.framing } : null;
+    });
+  }
+
   async function exportCollage() {
     setStatus({ kind: "rendering" });
     try {
-      const cells = state.cells.map((cell) => {
-        const photo = cell.photoId ? photoById.get(cell.photoId) : undefined;
-        return photo ? { image: photo.image, framing: cell.framing } : null;
-      });
-      const { blob, width, height } = await renderCollage(state.settings, cells);
+      const { blob, width, height } = await renderCollage(state.settings, renderCells());
       const filename = collageFilename(state.settings);
       downloadBlob(blob, filename);
       setStatus({ kind: "done", filename, width, height, bytes: blob.size });
@@ -118,11 +123,26 @@ export default function CollageTool() {
     }
   }
 
+  async function copyCollage() {
+    setStatus({ kind: "copying" });
+    try {
+      // ClipboardItem menerima promise, sehingga izin menulis tetap terikat ke klik user (Safari).
+      const png = renderCollage(state.settings, renderCells(), "image/png").then((result) => result.blob);
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+      setStatus({ kind: "copied" });
+    } catch {
+      setStatus({ kind: "error", message: "Browser ini belum bisa menyalin gambar. Unduh saja." });
+    }
+  }
+
   // Setelan apa pun yang berubah membuat status unduhan lama tidak relevan.
   useEffect(() => {
-    setStatus((current) => (current.kind === "done" || current.kind === "error" ? { kind: "idle" } : current));
+    setStatus((current) =>
+      current.kind === "done" || current.kind === "copied" || current.kind === "error" ? { kind: "idle" } : current,
+    );
   }, [state.settings, state.cells]);
 
+  const busy = status.kind === "rendering" || status.kind === "copying";
   const formatLabel = state.settings.format === "jpeg" ? "JPG" : "PNG";
 
   return (
@@ -134,6 +154,7 @@ export default function CollageTool() {
         pill={`${filled} dari ${state.cells.length} sel terisi`}
         status={
           <>
+            {status.kind === "copied" && "Kolase disalin ke clipboard"}
             {status.kind === "done" && (
               <>
                 Diunduh <span className="tool-bar__strong">{status.filename}</span>
@@ -149,12 +170,15 @@ export default function CollageTool() {
               <RotateCcw size={14} strokeWidth={1.5} aria-hidden="true" />
               <span className="hide-sm">Mulai ulang</span>
             </button>
-            <button
-              type="button"
-              className="btn btn--primary"
-              onClick={exportCollage}
-              disabled={filled === 0 || status.kind === "rendering"}
-            >
+            <button type="button" className="btn" onClick={copyCollage} disabled={filled === 0 || busy}>
+              {status.kind === "copying" ? (
+                <LoaderCircle className="spin" size={14} strokeWidth={1.5} aria-hidden="true" />
+              ) : (
+                <Copy size={14} strokeWidth={1.5} aria-hidden="true" />
+              )}
+              <span className="hide-sm">Salin gambar</span>
+            </button>
+            <button type="button" className="btn btn--primary" onClick={exportCollage} disabled={filled === 0 || busy}>
               {status.kind === "rendering" ? (
                 <LoaderCircle className="spin" size={14} strokeWidth={2} aria-hidden="true" />
               ) : (

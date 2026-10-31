@@ -9,11 +9,13 @@ export interface RenderCell {
 
 /**
  * Gambar kolase ke kanvas baru dan kembalikan sebagai Blob. Semuanya terjadi di browser:
- * tidak ada file yang dikirim ke server.
+ * tidak ada file yang dikirim ke server. `type` bisa memaksa PNG (clipboard hanya menerima PNG);
+ * latar tetap mengikuti `settings.format`, jadi salinan terlihat sama dengan unduhannya.
  */
 export async function renderCollage(
   settings: CollageSettings,
   cells: (RenderCell | null)[],
+  type: "image/png" | "image/jpeg" = settings.format === "jpeg" ? "image/jpeg" : "image/png",
 ): Promise<{ blob: Blob; width: number; height: number }> {
   const { width, height } = outputSize(settings.ratioW, settings.ratioH, settings.longEdge);
   const canvas = document.createElement("canvas");
@@ -49,7 +51,6 @@ export async function renderCollage(
     ctx.restore();
   });
 
-  const type = settings.format === "jpeg" ? "image/jpeg" : "image/png";
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, 0.92));
   // Lepas memori kanvas besar secepatnya (penting di perangkat mobile).
   canvas.width = canvas.height = 0;

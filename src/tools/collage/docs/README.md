@@ -4,7 +4,7 @@ Rute: `/tools/kolase` · Kategori: Edit Gambar (`image-editor`) · Definisi: `sr
 
 ## Fungsi
 
-Menggabungkan beberapa foto jadi satu gambar dalam grid R×K (1–8 baris, 1–8 kolom) dengan rasio siap unggah, lalu mengunduhnya sebagai PNG atau JPG. Semua proses di browser; foto tidak pernah dikirim atau disimpan.
+Menggabungkan beberapa foto jadi satu gambar dalam grid R×K (1–8 baris, 1–8 kolom) dengan rasio siap unggah, lalu mengunduhnya sebagai PNG atau JPG, atau menyalinnya ke clipboard. Semua proses di browser; foto tidak pernah dikirim atau disimpan.
 
 ## Cara pakai
 
@@ -16,7 +16,7 @@ Menggabungkan beberapa foto jadi satu gambar dalam grid R×K (1–8 baris, 1–8
 6. **Latar:** putih, hitam, batu, transparan (PNG saja), atau warna bebas.
 7. **Atur foto di sel:** klik untuk memilih, seret untuk menggeser (di mode Utuh: memindah letak foto di dalam sel), zoom lewat slider, Ctrl/⌘+scroll, atau pinch di trackpad. Keyboard: panah menggeser, `+`/`-` zoom, Delete mengosongkan sel, Enter memilih/menambah.
 8. **Tukar posisi:** seret thumbnail dari panel Foto ke sel lain. Jika foto sudah ada di sel lain, keduanya bertukar.
-9. **Ekspor:** sisi terpanjang 1080 / 2048 / 4096 px, format PNG/JPG, lalu "Unduh".
+9. **Ekspor:** sisi terpanjang 1080 / 2048 / 4096 px, format PNG/JPG, lalu "Unduh". **Salin gambar** menyalin kolase ke clipboard untuk langsung ditempel di chat/dokumen tanpa mengunduh.
 10. **Setelan tersimpan:** setelan terakhir diingat di browser ini (lihat *Penyimpanan setelan*). **Kembalikan ke bawaan** mengembalikan semua setelan dan menghapus yang tersimpan.
 
 Di layar sentuh, ketukan pertama pada sel hanya memilih sel supaya halaman tetap bisa digulir; geser foto setelah sel terpilih.
@@ -26,7 +26,7 @@ Di layar sentuh, ketukan pertama pada sel hanya memilih sel supaya halaman tetap
 | File | Isi |
 | --- | --- |
 | `index.ts` | `ToolDefinition` (nama, kata kunci pencarian, lazy load). |
-| `CollageTool.tsx` | Komponen utama: state, muat file, tempel, drop halaman, ekspor. Memakai `ToolBar`, `useFilePicker`, `usePageFileDrop`, `usePasteFiles` dari `components/tool/`. |
+| `CollageTool.tsx` | Komponen utama: state, muat file, tempel, drop halaman, ekspor (unduh dan salin). Memakai `ToolBar`, `useFilePicker`, `usePageFileDrop`, `usePasteFiles` dari `components/tool/`. |
 | `CollageSkeleton.tsx` | Skeleton saat chunk dimuat (memakai class CSS yang sama). |
 | `Preview.tsx` | SVG mini untuk baris di home. |
 | `collage.css` | Tiga kolom, preset grid/rasio, kanvas, tray. Kerangka & kontrol umum ada di `src/styles/tool.css`. |
@@ -63,6 +63,7 @@ State   { settings, photos: Photo[], cells: Cell[] /* rows*cols, urut baris */, 
 - **Mengganti mode per sel** mengembalikan zoom dan posisi ke tengah agar hasilnya langsung terlihat; "Tengahkan" mempertahankan mode sel.
 - **Ekspor:** `snapRect` membulatkan tepi sel ke piksel penuh agar tidak ada garis tipis saat jarak 0. Sel dipotong dengan path sudut membulat (`arcTo`, tanpa bergantung pada `roundRect`).
 - **Grid berubah:** sel lama dipertahankan sesuai urutan baca; foto yang belum dipakai mengisi sel kosong berikutnya; sisanya tetap di tray dengan catatan "N foto belum dipakai".
+- **Salin gambar:** clipboard hanya menerima PNG, jadi `renderCollage` dipanggil dengan `type: "image/png"` walau format JPG dipilih. Latar tetap mengikuti format (transparen menjadi putih bila JPG), jadi tampilannya sama dengan unduhan. `ClipboardItem` diberi promise PNG agar izin clipboard tetap terikat ke klik user (syarat Safari). Ukuran ekspor yang dipilih tetap berlaku.
 - **Memori:** `releasePhoto` dipanggil saat hapus, saat mulai ulang, dan saat unmount. Kanvas ekspor dikecilkan ke 0×0 setelah `toBlob`.
 
 ## Penyimpanan setelan
