@@ -32,7 +32,17 @@ export function AppFrame({ children }: { children: ReactNode }) {
       </header>
       <main className="frame__sheet">{children}</main>
       <footer className="frame__footer">
-        <Link to="/kredit">Kredit</Link>
+        <div className="frame__links">
+          <Link to="/kredit">Kredit</Link>
+          <a href="https://eznom.noahresourcetech.com/" className="frame__maker" target="_blank" rel="noopener">
+            <span>eznom: billing RT/RW Net</span>
+            <ArrowUpRight size={14} strokeWidth={1.5} aria-hidden="true" />
+          </a>
+          <a href="https://hotspot-editor.noahresourcetech.com/" className="frame__maker" target="_blank" rel="noopener">
+            <span>Editor Hotspot MikroTik</span>
+            <ArrowUpRight size={14} strokeWidth={1.5} aria-hidden="true" />
+          </a>
+        </div>
         <a href="https://noahresourcetech.com" className="frame__maker" target="_blank" rel="noopener">
           <span>Dibuat oleh</span>
           <NoahMark size={18} />

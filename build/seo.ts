@@ -166,6 +166,8 @@ export function seo(): Plugin {
               .join("");
             return `<h2>${escapeHtml(category.name)}</h2><ul>${list}</ul>`;
           }),
+          `<p><a href="https://eznom.noahresourcetech.com/">eznom: billing RT/RW Net</a></p>`,
+          `<p><a href="https://hotspot-editor.noahresourcetech.com/">Editor Hotspot MikroTik</a></p>`,
         ].join(""),
       };
       shellFile.source = renderPage(shell, home, site);

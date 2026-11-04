@@ -137,6 +137,13 @@
   color: var(--text);
 }
 
+.frame__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
 .frame__maker {
   display: inline-flex;
   align-items: center;
